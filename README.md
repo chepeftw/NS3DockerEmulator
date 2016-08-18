@@ -148,10 +148,10 @@ For now it will run a Beacon demo (which is in another repo of mine), which basi
 python ./main.py -n 5 -t 100 -o create
 ```
 
--n is for the number of nodes
--t is for the time of the simulation (this currently does not works (not sure why))
--o operation, it ca be "create" or "destroy"
---no-cache (optional) is for forcing the rebuild of the docker image file
+- -n is for the number of nodes
+- -t is for the time of the simulation (this currently does not works (not sure why))
+- -o operation, it ca be "create" or "destroy"
+- --no-cache (optional) is for forcing the rebuild of the docker image file
 
 This will create the N Docker containers, bridges and tap interfaces, and will configure everything.
 
