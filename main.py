@@ -11,10 +11,12 @@ from os.path import isfile, join
 numberOfNodesStr='200'
 emulationTimeStr='600'
 operationStr='none'
+noBuildCacheDocker=''
 
 baseContainerName='myubuntu'
 
-pidsDirectory = "./var/pids/"
+pidsDirectory = "./var/pid/"
+logsDirectory = "./var/log/"
  
 ###############################
 # n == number of nodes
@@ -25,7 +27,7 @@ pidsDirectory = "./var/pids/"
 # options that require an argument followed by a colon (':') i.e. -i fileName
 #
 try:
-    myopts, args = getopt.getopt(sys.argv[1:],"hn:o:t:",["number=","operation=","time="])
+    myopts, args = getopt.getopt(sys.argv[1:],"hn:o:t:",["number=","operation=","time=","no-cache"])
 except getopt.GetoptError as e:
     print (str(e))
     print("Usage: %s -o <create|destroy> -n numberOfNodes -t emulationTime" % sys.argv[0])
@@ -41,7 +43,8 @@ for opt, arg in myopts:
         emulationTimeStr=arg
     elif opt in ("-o", "--operation"):
         operationStr=arg
-
+    elif opt in ("--no-cache"):
+        noBuildCacheDocker='--no-cache'
 
 # Display input and output file name passed as the args
 print ("Number of nodes : %s and emulation time : %s and operation : %s" % (numberOfNodesStr,emulationTimeStr,operationStr) )
@@ -59,8 +62,8 @@ def create():
     #############################
     ## First we make sure we are running the latest version of our Ubuntu container
     ## This Ubuntu has tools like ping and ifconfig available.
-    # docker build -t myubuntu docker/.
-    r_code = subprocess.call("docker build -t %s docker/." % (baseContainerName), shell=True)
+    ## docker build -t myubuntu docker/.
+    r_code = subprocess.call("docker build %s -t %s docker/." % (noBuildCacheDocker, baseContainerName), shell=True)
     if r_code != 0:
         print "Error building base container %s" %(baseContainerName)
         sys.exit(2)
@@ -73,12 +76,25 @@ def create():
     ## Second, we run the numberOfNodes of containers.
     ## https://docs.docker.com/engine/reference/run/
     ## They have to run as privileged (don't remember why, need to clarify but I read it in stackoverflow)
+    ## (Found it, it is to have access to all host devices, might be unsafe, will check later)
+    ## By default, Docker containers are "unprivileged" and cannot, for example, run a Docker daemon inside a Docker container. 
+    ## This is because by default a container is not allowed to access any devices, but a "privileged" container is given access to all devices.
     ## -dit ... -d run as daemon, -i Keep STDIN open even if not attached, -t Allocate a pseudo-tty
     ## --name the name of the container, using emuX
     ## Finally the name of our own Ubuntu image.
+    if not os.path.exists(logsDirectory):
+        os.makedirs(logsDirectory)
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+
     acc_status=0
     for x in range(0, numberOfNodes):
-        r_code = subprocess.call("docker run --privileged -dit --net=none --name %s %s" % (nameList[x], baseContainerName), shell=True)
+        if not os.path.exists(logsDirectory+nameList[x]):
+            os.makedirs(logsDirectory+nameList[x])
+
+        logHostPath = dir_path + logsDirectory[1:] + nameList[x] ## "." are not allowed in the -v of docker and it just work with absolute paths
+
+        r_code = subprocess.call("docker run --privileged -dit --net=none -v %s:/var/log/golang --name %s %s" % (logHostPath, nameList[x], baseContainerName), shell=True)
         if r_code != 0:
             acc_status+=r_code
             print "Error run docker container %s" %(nameList[x])
@@ -192,6 +208,8 @@ def destroy():
                 print "Error destroying bridge side-X-%s" %(nameList[x])
             else:
                 print "Destroyed bridge side-int-%s and side-ext-%s" % (nameList[x], nameList[x])
+
+        r_code = subprocess.call("sudo rm -rf %s" %(pidsDirectory+nameList[x]), shell=True)
 
 
     ## This is SO SO UNSAFE, but I'll tweak it later to remove based on stored PID in the fs.
