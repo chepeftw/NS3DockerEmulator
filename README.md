@@ -142,7 +142,7 @@ If your path doesn't match the path inside this script, please update it.
 
 ### Run the main.py
 
-You can run the main.py like this:
+For now it will run a Beacon demo (which is in another repo of mine), which basically starts dockers, configures them and start a Beacon GoLang program in each docker that it is a beacon as the name suggest hehe, and it will broadcast a HelloWorld message through json and it will be logged into the host fs into ./var/log. You can run the main.py like this:
 
 ```bash
 python ./main.py -n 5 -t 100 -o create
@@ -151,6 +151,7 @@ python ./main.py -n 5 -t 100 -o create
 -n is for the number of nodes
 -t is for the time of the simulation (this currently does not works (not sure why))
 -o operation, it ca be "create" or "destroy"
+--no-cache (optional) is for forcing the rebuild of the docker image file
 
 This will create the N Docker containers, bridges and tap interfaces, and will configure everything.
 
