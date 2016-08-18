@@ -142,7 +142,7 @@ If your path doesn't match the path inside this script, please update it.
 
 ### Run the main.py
 
-For now it will run a Beacon demo (which is in another repo of mine), which basically starts dockers, configures them and start a Beacon GoLang program in each docker that it is a beacon as the name suggest hehe, and it will broadcast a HelloWorld message through json and it will be logged into the host fs into ./var/log. You can run the main.py like this:
+For now it will run a Beacon demo (which is in another repo of mine(https://github.com/chepeftw/Beacon)), which basically starts dockers, configures them and start a Beacon GoLang program in each docker that it is a beacon as the name suggest hehe, and it will broadcast a HelloWorld message through json and it will be logged into the host fs into ./var/log. You can run the main.py like this:
 
 ```bash
 python ./main.py -n 5 -t 100 -o create
