@@ -13,7 +13,8 @@ emulationTimeStr='600'
 operationStr='none'
 noBuildCacheDocker=''
 
-baseContainerName='myubuntu'
+baseContainerName0='mybaseubuntu'
+baseContainerName1='myubuntu'
 
 pidsDirectory = "./var/pid/"
 logsDirectory = "./var/log/"
@@ -50,6 +51,26 @@ for opt, arg in myopts:
 print ("Number of nodes : %s and emulation time : %s and operation : %s" % (numberOfNodesStr,emulationTimeStr,operationStr) )
 
 
+################################################################################
+########### error handling ()
+################################################################################
+
+def checkReturnCode( rCode, str ):
+   if rCode != 0:
+        print "Error: %s" %(str)
+        sys.exit(2)
+    else:
+        print "Success: %s" %(str)
+   return
+
+def checkReturnCodePassive( rCode, str ):
+   if rCode != 0:
+        print "Error: %s" %(str)
+    else:
+        print "Success: %s" %(str)
+   return
+
+
 
 ################################################################################
 ################################################################################
@@ -63,14 +84,17 @@ def create():
     ## First we make sure we are running the latest version of our Ubuntu container
     ## This Ubuntu has tools like ping and ifconfig available.
     ## docker build -t myubuntu docker/.
-    r_code = subprocess.call("docker build %s -t %s docker/." % (noBuildCacheDocker, baseContainerName), shell=True)
-    if r_code != 0:
-        print "Error building base container %s" %(baseContainerName)
-        sys.exit(2)
-    else:
-        print "Docker build successful"
+    ## It's separated in two images so I can cache all that has to do with apt-get
+    ## because that barely changes and the second image is for the code which is more likely
+    ## to change really often. This recommendation of two images was done by the devs of docker.
+    ## I got it from a thread where they were discussing a "selective no cache".
+    r_code = subprocess.call("docker build -t %s docker/mybase/." % (baseContainerName0), shell=True)
+    checkReturnCode( r_code, "Building base container %s" %(baseContainerName0))
 
-
+    r_code = subprocess.call("docker build %s -t %s docker/myubuntu/." % (noBuildCacheDocker, baseContainerName1), shell=True)
+    # r_code = subprocess.call("docker build %s --build-arg FSMMODE=%s --build-arg NNODES=%s --build-arg ROOTN=%s -t %s docker/." % (noBuildCacheDocker, mode, numberOfNodesStr, rootNode, baseContainerName1), shell=True)
+    # r_code = subprocess.call("docker build %s --build-arg ROOTN=%s -t %s docker/." % (noBuildCacheDocker, rootNode, baseContainerName1), shell=True)
+    checkReturnCode( r_code, "Building regular container %s" %(baseContainerName1))
 
     #############################
     ## Second, we run the numberOfNodes of containers.
@@ -94,12 +118,9 @@ def create():
 
         logHostPath = dir_path + logsDirectory[1:] + nameList[x] ## "." are not allowed in the -v of docker and it just work with absolute paths
 
-        r_code = subprocess.call("docker run --privileged -dit --net=none -v %s:/var/log/golang --name %s %s" % (logHostPath, nameList[x], baseContainerName), shell=True)
-        if r_code != 0:
-            acc_status+=r_code
-            print "Error run docker container %s" %(nameList[x])
-        else:
-            print "Container running %s" % (nameList[x])
+        r_code = subprocess.call("docker run --privileged -dit --net=none -v %s:/var/log/golang --name %s %s" % (logHostPath, nameList[x], baseContainerName1), shell=True)
+        checkReturnCode( r_code, "Running docker container %s" %(nameList[x]))
+        acc_status+=r_code
 
     ## If something went wrong running the docker containers, we panic and exit
     if acc_status > 0:
@@ -114,18 +135,12 @@ def create():
     acc_status=0
     for x in range(0, numberOfNodes):
         r_code = subprocess.call("sudo bash net/singleSetup.sh %s" % (nameList[x]), shell=True)
-        if r_code != 0:
-            acc_status+=r_code
-            print "Error creating bridge br-%s" %(nameList[x])
-        else:
-            print "Created bridge br-%s and tap interface tap-%s" % (nameList[x],nameList[x])
+        checkReturnCode( r_code, "Creating bridge br-%s and tap interface tap-%s" % (nameList[x],nameList[x]) )
+        acc_status+=r_code
 
     r_code = subprocess.call("sudo bash net/singleEndSetup.sh", shell=True)
-    if r_code != 0:
-        acc_status+=r_code
-        print "Error finalizing bridges and tap interfaces"
-    else:
-        print "Finishing creation of bridges and tap interfaces"
+    checkReturnCode( r_code, "Finalizing bridges and tap interfaces" )
+    acc_status+=r_code
 
     ## If something went wrong creating the bridges and tap interfaces, we panic and exit
     if acc_status > 0:
@@ -150,15 +165,21 @@ def create():
             text_file.write("%s"%(pid))
 
         r_code = subprocess.call("sudo bash net/container.sh %s %s" % (nameList[x], x), shell=True)
-        if r_code != 0:
-            acc_status+=r_code
-            print "Error creating bridge side-X-%s" %(nameList[x])
-        else:
-            print "Created bridge side-int-%s and side-ext-%s" % (nameList[x],nameList[x])
+        checkReturnCode( r_code, "Creating bridge side-int-%s and side-ext-%s" % (nameList[x],nameList[x]))
+        acc_status+=r_code
 
     ## If something went wrong creating the bridges and tap interfaces, we panic and exit
     if acc_status > 0:
         sys.exit(2)
+
+    r_code = subprocess.call("cd ns3 && bash update.sh tap-wifi-virtual-machine.cc", shell=True)
+    if r_code != 0:
+        print "Error copying latest ns3 file"
+    else:
+        print "NS3 up to date!"
+        print "Go to NS3 folder, probably cd $NS3_HOME"
+        print "Run sudo ./waf --run \"scratch/tap-vm --NumNodes=%s --TotalTime=%s --TapBaseName=emu\"" % (numberOfNodesStr, emulationTimeStr)
+        print "or run sudo ./waf --run \"scratch/tap-vm --NumNodes=%s --TotalTime=%s --TapBaseName=emu --SizeX=100 --SizeY=100\"" % (numberOfNodesStr, emulationTimeStr)
 
     print "Done."
 
@@ -172,6 +193,31 @@ def create():
 
 
 
+
+################################################################################
+################################################################################
+########### ns3 ()
+################################################################################
+################################################################################
+def ns3():
+    print "NS3 ..."
+
+    r_code = subprocess.call("cd $NS3_HOME && sudo ./waf --run \"scratch/tap-vm --NumNodes=%s --TotalTime=%s --GridRowSize=%s --TapBaseName=emu\"" % (numberOfNodesStr, emulationTimeStr, gridRowSize), shell=True)
+    if r_code != 0:
+        print "NS3 WIN!"
+    else:
+        print "NS3 FAIL!"
+    
+    return
+################################################################################
+################################################################################
+########### end ns3 ()
+################################################################################
+################################################################################
+
+
+
+
 ################################################################################
 ################################################################################
 ########### destroy ()
@@ -181,44 +227,22 @@ def destroy():
     print "Destroying ..."
 
     for x in range(0, numberOfNodes):
-        r_code = subprocess.call("docker stop %s" % (nameList[x]), shell=True)
-        if r_code != 0:
-            print "Error stop docker container %s" %(nameList[x])
-        else:
-            print "Stopped %s" % (nameList[x])
+        r_code = subprocess.call("docker stop -t 0 %s" % (nameList[x]), shell=True)
+        checkReturnCodePassive( r_code, "Stopping docker container %s" % (nameList[x]))
 
         r_code = subprocess.call("docker rm %s" % (nameList[x]), shell=True)
-        if r_code != 0:
-            print "Error removing docker container %s" %(nameList[x])
-        else:
-            print "Removed %s" % (nameList[x])
+        checkReturnCodePassive( r_code, "Removing docker container %s" % (nameList[x]))
 
         r_code = subprocess.call("sudo bash net/singleDestroy.sh %s" % (nameList[x]), shell=True)
-        if r_code != 0:
-            acc_status+=r_code
-            print "Error destroying bridge br-%s" %(nameList[x])
-        else:
-            print "Destroyed bridge br-%s and tap interface tap-%s" % (nameList[x],nameList[x])
+        checkReturnCodePassive( r_code, "Destroying bridge and tap interface %s" % (nameList[x]))
 
-        with open(pidsDirectory+nameList[x], "rt") as in_file:
-            text = in_file.read()
-            r_code = subprocess.call("sudo rm -rf /var/run/netns/%s" %(text.strip()), shell=True)
-            if r_code != 0:
-                acc_status+=r_code
-                print "Error destroying bridge side-X-%s" %(nameList[x])
-            else:
-                print "Destroyed bridge side-int-%s and side-ext-%s" % (nameList[x], nameList[x])
+        if os.path.exists(pidsDirectory+nameList[x]):
+            with open(pidsDirectory+nameList[x], "rt") as in_file:
+                text = in_file.read()
+                r_code = subprocess.call("sudo rm -rf /var/run/netns/%s" %(text.strip()), shell=True)
+                checkReturnCodePassive( r_code, "Destroying docker bridges %s" % (nameList[x])) 
 
         r_code = subprocess.call("sudo rm -rf %s" %(pidsDirectory+nameList[x]), shell=True)
-
-
-    ## This is SO SO UNSAFE, but I'll tweak it later to remove based on stored PID in the fs.
-    # r_code = subprocess.call("sudo rm -rf /var/run/netns", shell=True) 
-    # if r_code != 0:
-    #     acc_status+=r_code
-    #     print "Error destroying bridge container-X-%s" %(nameList[x])
-    # else:
-    #     print "Destroyed bridge side-int-X and side-ext-X"
 
     return
 ################################################################################
@@ -241,6 +265,10 @@ for x in range(0, numberOfNodes):
 if 'create' == operationStr:
     create()
 elif 'destroy' == operationStr:
+    destroy()
+elif 'full' == operationStr:
+    create()
+    ns3()
     destroy()
 else:
     print "Nothing to be done ..."
