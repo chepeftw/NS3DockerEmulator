@@ -14,6 +14,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
+// Large Scale Simulations with ns3 using linux namespace
+// PROBLEMS :(
+// https://groups.google.com/forum/#!topic/ns-3-users/zy2VIrgh-Qo
+
+
+
 //
 // This is an illustration of how one could use virtualization techniques to
 // allow running applications on virtual machines talking over simulated
@@ -88,8 +95,15 @@ main (int argc, char *argv[])
   int NumNodes = 10;
   double TotalTime = 600.0;
 
-  int nodeSpeed = 20; //in m/s
-  int nodePause = 0; //in s
+  double distance = 100;  // m
+
+  int gridRowSize = 10;
+
+  // int nodeSpeed = 2; //in m/s
+  // int nodePause = 0; //in s
+
+  // double scenarioSizeX = 100.0;
+  // double scenarioSizeY = 100.0;
 
   std::string TapBaseName = "emu";
 
@@ -97,6 +111,10 @@ main (int argc, char *argv[])
   cmd.AddValue ("NumNodes", "Number of nodes/devices", NumNodes);
   cmd.AddValue ("TotalTime", "Total simulation time", TotalTime);
   cmd.AddValue ("TapBaseName", "Base name for tap interfaces", TapBaseName);
+  cmd.AddValue ("GridRowSize", "Grid row size", gridRowSize);
+  cmd.AddValue ("GridDistance", "Grid distance", distance);
+  // cmd.AddValue ("SizeX", "Scenario Size in X axis", scenarioSizeX);
+  // cmd.AddValue ("SizeY", "Scenario Size in Y axis", scenarioSizeY);
   cmd.AddValue ("AnimationOn", "Enable animation", AnimationOn);
 
   cmd.Parse (argc,argv);
@@ -160,24 +178,41 @@ main (int argc, char *argv[])
   NS_LOG_UNCOND ("Configuring mobility");
   MobilityHelper mobility;
 
-  ObjectFactory pos;
-  pos.SetTypeId ("ns3::RandomRectanglePositionAllocator");
-  pos.Set ("X", StringValue ("ns3::UniformRandomVariable[Min=0.0|Max=100.0]"));
-  pos.Set ("Y", StringValue ("ns3::UniformRandomVariable[Min=0.0|Max=100.0]"));
+  // ObjectFactory pos;
+  // pos.SetTypeId ("ns3::RandomRectanglePositionAllocator");
+  // std::stringstream xAxisMax;
+  // xAxisMax << "ns3::UniformRandomVariable[Min=0.0|Max=" << scenarioSizeX << "]";
+  // std::stringstream yAxisMax;
+  // yAxisMax << "ns3::UniformRandomVariable[Min=0.0|Max=" << scenarioSizeY << "]";
+  // pos.Set ("X", StringValue ( xAxisMax.str () ));
+  // pos.Set ("Y", StringValue ( yAxisMax.str () ));
+  // NS_LOG_UNCOND ("Allocation => ns3::RandomRectanglePositionAllocator");
+  // Ptr<PositionAllocator> taPositionAlloc = pos.Create ()->GetObject<PositionAllocator> ();
 
+  ObjectFactory pos;
+  pos.SetTypeId ("ns3::GridPositionAllocator");
+  pos.Set ("MinX", DoubleValue ( 0.0 ));
+  pos.Set ("MinY", DoubleValue ( 0.0 ));
+  pos.Set ("DeltaX", DoubleValue ( distance ));
+  pos.Set ("DeltaY", DoubleValue ( distance ));
+  pos.Set ("GridWidth", UintegerValue ( gridRowSize ));
+  pos.Set ("LayoutType", StringValue ( "RowFirst" ));
+  NS_LOG_UNCOND ("Allocation => ns3::GridPositionAllocator");
   Ptr<PositionAllocator> taPositionAlloc = pos.Create ()->GetObject<PositionAllocator> ();
 
-  std::stringstream ssSpeed;
-  ssSpeed << "ns3::UniformRandomVariable[Min=0.0|Max=" << nodeSpeed << "]";
-  std::stringstream ssPause;
-  ssPause << "ns3::ConstantRandomVariable[Constant=" << nodePause << "]";
-  NS_LOG_UNCOND ("Mobility => ns3::RandomWaypointMobilityModel");
-  mobility.SetMobilityModel ("ns3::RandomWaypointMobilityModel",
-                                  "Speed", StringValue (ssSpeed.str ()),
-                                  "Pause", StringValue (ssPause.str ()),
-                                  "PositionAllocator", PointerValue (taPositionAlloc));
-  // NS_LOG_UNCOND ("Mobility => ns3::ConstantPositionMobilityModel");
-  // mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+  // std::stringstream ssSpeed;
+  // ssSpeed << "ns3::UniformRandomVariable[Min=0.0|Max=" << nodeSpeed << "]";
+  // std::stringstream ssPause;
+  // ssPause << "ns3::ConstantRandomVariable[Constant=" << nodePause << "]";
+  // NS_LOG_UNCOND ("Mobility => ns3::RandomWaypointMobilityModel");
+  // mobility.SetMobilityModel ("ns3::RandomWaypointMobilityModel",
+  //                                 "Speed", StringValue (ssSpeed.str ()),
+  //                                 "Pause", StringValue (ssPause.str ()),
+  //                                 "PositionAllocator", PointerValue (taPositionAlloc));
+
+  NS_LOG_UNCOND ("Mobility => ns3::ConstantPositionMobilityModel");
+  mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+
   mobility.SetPositionAllocator (taPositionAlloc);
   mobility.Install (nodes);
 
