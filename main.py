@@ -118,13 +118,10 @@ def create():
 
         logHostPath = dir_path + logsDirectory[1:] + nameList[x] ## "." are not allowed in the -v of docker and it just work with absolute paths
 
-        r_code = subprocess.call("docker run --privileged -dit --net=none -v %s:/var/log/golang --name %s %s" % (logHostPath, nameList[x], baseContainerName1), shell=True)
-        checkReturnCode( r_code, "Running docker container %s" %(nameList[x]))
-        acc_status+=r_code
+        acc_status += subprocess.call("docker run --privileged -dit --net=none -v %s:/var/log/golang --name %s %s" % (logHostPath, nameList[x], baseContainerName1), shell=True)
 
     ## If something went wrong running the docker containers, we panic and exit
-    if acc_status > 0:
-        sys.exit(2)
+    checkReturnCode( acc_status, "Running docker containers")
 
 
 
@@ -134,17 +131,12 @@ def create():
     ## But in the source you can find more examples in the same dir.
     acc_status=0
     for x in range(0, numberOfNodes):
-        r_code = subprocess.call("sudo bash net/singleSetup.sh %s" % (nameList[x]), shell=True)
-        checkReturnCode( r_code, "Creating bridge br-%s and tap interface tap-%s" % (nameList[x],nameList[x]) )
-        acc_status+=r_code
+        acc_status += subprocess.call("sudo bash net/singleSetup.sh %s" % (nameList[x]), shell=True)
 
-    r_code = subprocess.call("sudo bash net/singleEndSetup.sh", shell=True)
-    checkReturnCode( r_code, "Finalizing bridges and tap interfaces" )
-    acc_status+=r_code
-
-    ## If something went wrong creating the bridges and tap interfaces, we panic and exit
-    if acc_status > 0:
-        sys.exit(2)
+    checkReturnCode( acc_status, "Creating bridge and tap interface")
+    
+    acc_status += subprocess.call("sudo bash net/singleEndSetup.sh", shell=True)
+    checkReturnCode( acc_status, "Finalizing bridges and tap interfaces" )
 
 
     if not os.path.exists(pidsDirectory):
@@ -164,13 +156,10 @@ def create():
         with open(pidsDirectory+nameList[x], "w") as text_file:
             text_file.write("%s"%(pid))
 
-        r_code = subprocess.call("sudo bash net/container.sh %s %s" % (nameList[x], x), shell=True)
-        checkReturnCode( r_code, "Creating bridge side-int-%s and side-ext-%s" % (nameList[x],nameList[x]))
-        acc_status+=r_code
+        acc_status += subprocess.call("sudo bash net/container.sh %s %s" % (nameList[x], x), shell=True)
 
     ## If something went wrong creating the bridges and tap interfaces, we panic and exit
-    if acc_status > 0:
-        sys.exit(2)
+    checkReturnCode( acc_status, "Creating bridge side-int-X and side-ext-X" )
 
     r_code = subprocess.call("cd ns3 && bash update.sh tap-wifi-virtual-machine.cc", shell=True)
     if r_code != 0:
