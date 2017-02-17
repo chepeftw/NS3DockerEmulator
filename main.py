@@ -56,19 +56,20 @@ print ("Number of nodes : %s and emulation time : %s and operation : %s" % (numb
 ################################################################################
 
 def checkReturnCode( rCode, str ):
-   if rCode != 0:
+    if rCode != 0:
         print "Error: %s" %(str)
         sys.exit(2)
     else:
         print "Success: %s" %(str)
-   return
+    return
 
 def checkReturnCodePassive( rCode, str ):
-   if rCode != 0:
+    if rCode != 0:
         print "Error: %s" %(str)
+
     else:
         print "Success: %s" %(str)
-   return
+    return
 
 
 
