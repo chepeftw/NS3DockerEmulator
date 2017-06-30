@@ -69,3 +69,4 @@ sudo apt install bridge-utils
 sudo apt install uml-utilities 
 
 git clone https://github.com/chepeftw/NS3DockerEmulator.git
+cd NS3DockerEmulator
