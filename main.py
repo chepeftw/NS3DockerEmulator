@@ -35,6 +35,8 @@ parser.add_argument("-t", "--time", action="store",
 parser.add_argument('-v', '--version', action='version', version='%(prog)s 1.0')
 args = parser.parse_args()
 
+if args.operationStr:
+    operationStr = args.operationStr
 if args.number:
     numberOfNodesStr = args.number
 if args.time:
