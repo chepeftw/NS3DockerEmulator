@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Jekyll Docs Template"
+title: "Introduction to NS3 Docker Emulator"
 ---
 
 # NS3DockerEmulator
