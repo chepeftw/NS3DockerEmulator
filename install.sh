@@ -41,6 +41,11 @@ echo -e "\n\n Verifying Ns3  ... \n"
 cd source/ns-3.25
 ./waf
 
+echo -e "\n\n Recompoling NS3 in optimized mode  ... \n"
+./waf distclean
+./waf -d optimized configure --disable-examples --disable-tests --disable-python --enable-static --no-task-lines
+./waf
+
 echo -e "\n\n Running first Ns3 example  ... \n"
 cp examples/tutorial/first.cc scratch/
 ./waf
