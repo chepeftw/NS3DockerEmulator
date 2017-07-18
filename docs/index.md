@@ -3,12 +3,13 @@ layout: default
 title: "Introduction to NS3 Docker Emulator"
 ---
 
-# NS3DockerEmulator
 Network Emulator based on NS3 and Docker, with the help of NS3 docs, Docker docs and some ideas from some research papers.
 
 <img src="https://github.com/chepeftw/NS3DockerEmulator/raw/master/NS3DockerEmulatorSchema.jpg" alt="NS3 Docker Emulator Schema" style="width: 100%;">
 
 Make sure you have everything installed, for detailed instructions refer to the [Preliminaries](/doc/preliminaries.html). You can also check the "install.sh" script provided by @ptrsen (Thank you very much (y)).
+
+The existing documentation is intended for the latest version at the moment, which is [v1.0](https://github.com/chepeftw/NS3DockerEmulator/releases/tag/v1.0).
 
 ## NS3 Docker Emulator
 
