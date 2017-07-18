@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ETH0=$(ifconfig -a | grep eth0 | wc -l)
+# ETH0=$(ip a | grep eth0 | wc -l)
 
 while [ $ETH0 -eq 0 ]
 do
