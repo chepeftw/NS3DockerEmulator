@@ -6,7 +6,7 @@ subtitle: 'Documentation for NS3 Docker Emulator by ChepeFTW'
 disqus_shortname: ''
 
 # if you use google analytics, add your tracking id here
-google_analytics_id: ''
+google_analytics_id: 'UA-102807959-1'
 
 # Enable/show navigation. There are there options:
 #   0 - always hide
