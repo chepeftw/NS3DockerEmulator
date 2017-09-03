@@ -7,22 +7,17 @@
 FROM mybaseubuntu
 MAINTAINER <Chepe Alvarez chepeftw@gmail.com>
 
-RUN mkdir -p /data/golang/src/github.com/chepeftw /data/golang/bin
-ENV GOPATH /data/golang
-ENV GOBIN $GOPATH/bin
-ENV PATH $PATH:$GOBIN
-
-#ARG NNODES
-#ARG ROOTN
-#ARG FSMMODE
-#ENV NNODES ${NNODES}
-#ENV ROOTN ${ROOTN}
-#ENV FSMMODE ${FSMMODE}
-
 WORKDIR /data/golang/src/github.com/chepeftw
-RUN git clone https://github.com/chepeftw/Beacon.git
+RUN git clone https://github.com/chepeftw/Treesiplibs.git \
+        && git clone https://github.com/chepeftw/Gossip.git \
+        && git clone https://github.com/chepeftw/Treesip.git \
+        && cd /data/golang/src/github.com/chepeftw/Treesiplibs \
+        && go get && go build && go install \
+        && cd /data/golang/src/github.com/chepeftw/Gossip \
+        && go get && go build && go install \
+        && cd /data/golang/src/github.com/chepeftw/Treesip \
+        && go get && go build && go install
 
-WORKDIR Beacon
-RUN go get && go build && go install
+ADD wrapper.sh /data/wrapper.sh
 
-CMD Beacon
+CMD bash /data/wrapper.sh
