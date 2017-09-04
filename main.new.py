@@ -8,9 +8,7 @@ import argparse
 import datetime
 import yaml
 
-
 __author__ = 'chepeftw'
-
 
 numberOfNodesStr = '20'
 emulationTimeStr = '600'
@@ -27,8 +25,6 @@ numberOfNodes = 0
 jobs = 1
 nameList = []
 
-# baseContainerName0 = 'mybaseubuntu'
-# baseContainerName1 = 'myubuntu'
 baseContainerNameMin = 'myminimalbox'
 
 pidsDirectory = "./var/pid/"
@@ -36,7 +32,16 @@ logsDirectory = "./var/log/"
 
 
 def main():
-    global numberOfNodesStr, emulationTimeStr, timeoutStr, nodeSpeed, nodePause, simulationCount, scenarioSize, numberOfNodes, nameList, jobs
+    global numberOfNodesStr, \
+        emulationTimeStr, \
+        timeoutStr, \
+        nodeSpeed, \
+        nodePause, \
+        simulationCount, \
+        scenarioSize, \
+        numberOfNodes, \
+        nameList, \
+        jobs
     print("Main ...")
 
     ###############################
@@ -114,9 +119,6 @@ def main():
         print("Nothing to be done ...")
 
 
-
-
-
 ################################################################################
 # error handling ()
 ################################################################################
@@ -137,9 +139,6 @@ def check_return_code_chill(rcode, message):
 
     print("Error: %s" % message)
     return
-
-
-
 
 
 ################################################################################
@@ -267,11 +266,10 @@ def create():
 
     return
 
+
 ################################################################################
 # end create ()
 ################################################################################
-
-
 
 
 ################################################################################
@@ -379,8 +377,6 @@ def write_conf(target, nodes, timeout, root, port, filename):
 ################################################################################
 # end ns3 ()
 ################################################################################
-
-
 
 
 ################################################################################
