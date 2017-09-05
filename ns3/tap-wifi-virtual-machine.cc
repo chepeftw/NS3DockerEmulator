@@ -82,6 +82,9 @@
 //                     |  point |
 //                     +--------+
 //
+
+
+
 #include <iostream>
 #include <fstream>
 
@@ -92,20 +95,16 @@
 #include "ns3/wifi-module.h"
 #include "ns3/tap-bridge-module.h"
 
-//#include "ns3/netanim-module.h"
 
-//#ifdef NS3_MPI
-//#include <mpi.h>
-//#endif
+
 
 using namespace ns3;
 
-NS_LOG_COMPONENT_DEFINE ("TapWifiVirtualMachineExample");
+//NS_LOG_COMPONENT_DEFINE ("TapWifiVirtualMachineExample");
 
 int
 main (int argc, char *argv[])
 {
-//  bool AnimationOn = true;
   int NumNodes = 10;
   double TotalTime = 600.0;
 
@@ -142,7 +141,6 @@ main (int argc, char *argv[])
 //  printf("scenarioSizeY = %f\n", scenarioSizeY);
 //  printf("nodeSpeed = %d\n", nodeSpeed);
 //  printf("nodePause = %d\n", nodePause);
-//  printf("AnimationOn = %s\n", AnimationOn ? "true" : "false");
 
   //
   // We are interacting with the outside, real, world.  This means we have to
@@ -153,31 +151,12 @@ main (int argc, char *argv[])
   GlobalValue::Bind ("ChecksumEnabled", BooleanValue (true));
 
 
-  // Enable parallel simulator with the command line arguments
-//  MpiInterface::Enable (&argc, &argv);
-
-
-
   //
   // Create NumNodes ghost nodes.
   //
 //  NS_LOG_UNCOND ("Creating nodes");
   NodeContainer nodes;
   nodes.Create (NumNodes);
-//  nodes.Create (NumNodes/2, 0);
-//  nodes.Create (NumNodes/2, 1);
-
-//  uint32_t systemId = MpiInterface::GetSystemId ();
-//  uint32_t systemCount = MpiInterface::GetSize ();
-//  std::cout << "systemCount = " << systemCount << std::endl;
-//
-//  // Check for valid distributed parameters.
-//  // Must have 2 or 3 tasks.
-//  if (systemCount < 2)
-//  {
-//      std::cout << "This simulation requires 2 or 3 logical processors." << std::endl;
-//      return 1;
-//  }
 
   //
   // We're going to use 802.11 A so set up a wifi helper to reflect that.
@@ -307,24 +286,6 @@ main (int argc, char *argv[])
         tapBridge.Install (nodes.Get (i), devices.Get (i));
     }
 
-
-//  if( AnimationOn )
-//  {
-//    NS_LOG_UNCOND ("Activating Animation");
-//    AnimationInterface anim ("animation.xml"); // Mandatory
-//    for (uint32_t i = 0; i < nodes.GetN (); ++i)
-//      {
-//        std::stringstream ssi;
-//        ssi << i;
-//        anim.UpdateNodeDescription (nodes.Get (i), "Node" + ssi.str()); // Optional
-//        anim.UpdateNodeColor (nodes.Get (i), 255, 0, 0); // Optional
-//      }
-//
-//    anim.EnablePacketMetadata (); // Optional
-//    anim.EnableIpv4RouteTracking ("routingtable-wireless.xml", Seconds (0), Seconds (TotalTime), Seconds (0.5)); //Optional
-//    // anim.EnableWifiMacCounters (Seconds (0), Seconds (TotalTime)); //Optional
-//    // anim.EnableWifiPhyCounters (Seconds (0), Seconds (TotalTime)); //Optional
-//  }
 
   //
   // Run the simulation for TotalTime seconds to give the user time to play around

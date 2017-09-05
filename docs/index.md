@@ -39,7 +39,7 @@ To run it you have 3 stages which will allow you to run highly scalable emulatio
 The following parameters are used among the 3 stages:
 - -n is for the number of nodes
 - -s is for the size of the network
-- operation string, it can be "create", "ns3", "simulation" or "destroy"
+- operation string, it can be "create", "ns3", "emulation" or "destroy"
 
 #### Create
 
@@ -54,7 +54,7 @@ Then it will start the NS3 process.
 #### Iterate
 
 ```bash
-python3 main.new.py -n 20 -s 300 simulation
+python3 main.new.py -n 20 -s 300 emulation
 ```
 
 This is the highly scalable part of the emulation.

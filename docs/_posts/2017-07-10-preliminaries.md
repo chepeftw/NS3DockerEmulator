@@ -9,7 +9,7 @@ order: 10
 <!-- # Preliminaries -->
 
 You should install NS3, Docker and some other utilities for the emulator to work.
-You can also check the "install.sh" script provided by @ptrsen (Thank you very much (y)).
+You can also check the "install.sh" script provided by @ptrsen (Thank you very much 👍).
 
 ## NS3
 Reference ... [https://www.nsnam.org/docs/tutorial/html/getting-started.html](https://www.nsnam.org/docs/tutorial/html/getting-started.html)
@@ -48,7 +48,7 @@ Now we can start by checking the system, downloading ns3 and building it.
 
 ```bash
 python $BAKE_HOME/bake.py check
-python $BAKE_HOME/bake.py configure -e ns-3.25
+python $BAKE_HOME/bake.py configure -e ns-3.26
 python $BAKE_HOME/bake.py download
 python $BAKE_HOME/bake.py build
 ```
@@ -57,7 +57,7 @@ The last command might take a while.
 Then you can go to the ns3 folder, should be something like:
 
 ```bash
-cd source/ns-3.25
+cd source/ns-3.26
 ```
 
 To test that everything is working you can try:
@@ -102,7 +102,7 @@ Running NS3 optimized:
 ./waf distclean
 # we configure the compile options as optimized, disable examples, tests, python integration and static.
 ./waf -d optimized configure --disable-examples --disable-tests --disable-python --enable-static --no-task-lines
-# we recompile
+# we recompile (this will take some time)
 ./waf
 ```
 

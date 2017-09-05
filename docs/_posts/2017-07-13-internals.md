@@ -10,17 +10,23 @@ The project has 3 main folders, each one for a different purpose.
 
 ## docker
 
-The folder "docker", as you might expect, refers to the Docker image.
+The folder "docker", as you might expect, refers to the Docker images.
 For the simple case, the idea is that the container pulls a repo from github.
 Then builds the code, runs it and that's it.
-It was separated in two images since I wanted to cache the installation of the base packages.
-Therefore the image "mybase" has the base packages installed and its barely built.
-And then you have the image "myubuntu" builds from "mybase" and it only installs the GoLang code and runs it.
-This is intended to be in one alpine image with the latest features of Docker, which will be updated in the near future.
 
-In this folder, there is a script I use in internal testing called "isEthernetUp.sh", which I run from the Dockerfile.
+Thanks to the latest additions of Docker, we will use multi stage builds.
+You can find plenty of docs regarding this like:
+- [Use multi-stage builds by Docker](https://docs.docker.com/engine/userguide/eng-image/multistage-build/#use-multi-stage-builds)
+- [Builder pattern vs. Multi-stage builds in Docker](https://blog.alexellis.io/mutli-stage-docker-builds/)
+So since we are using a GoLang application, we will use the Go Container.
+From this we will build the app, then copy it to a clean container and that is it.
+Keep in mind that if your app needs more stuff, always consider using an Alpine container.
+
+In this folder, there is a script I use for multiple services called "wrapper.sh", which I run from the Dockerfile.
 This script is in charge of making sure the container has an IP before running the main code.
 On the process it can do multiple stuff like starting other useful services or logging some useful information.
+For our specific Beacon example, is not so useful since we just have one thing running, but for more complex applications comes really handy to keep track of multiple apps.
+This idea I took it from the recommendation by Docker for [Multi Service Container](https://docs.docker.com/engine/admin/multi-service_container/).
 
 ## ns3
 
@@ -30,26 +36,32 @@ The main two files from this folder is "tap-wifi-virtual-machine.cc" and "update
 
 This file contains the main code for NS3 to model the network.
 It contains a lot of NS3 concepts and uses way beyond this documentation, therefore I highly recommend for you to read the NS3 documentation.
+Keep in mind that all the "NS_LOG_UNCOND()" calls are commented to optimize the running time for the NS3 simulation.
+
 In a brief summary, this file intends to model a mobile ad-hoc network A.K.A. MANET.
-The main areas are from line ~90 to line ~130, its variable initialization and parsing arguments.
+The main areas are from line ~105 to line ~134, its variable initialization and parsing arguments.
 The idea is to have as much arguments as possible to control everything from the outside.
-Then from line ~130 to ~170 the initialization of the simulated network.
+Then from line ~145 to ~194 the initialization of the simulated network.
 Basically the configuration of the physical layer.
-Then from line ~180 to ~203 is the initial position allocation, it could be a grid or a random position.
+Then from line ~196 to ~224 is the initial position allocation, it could be a grid or a random position.
 Both options are present in the file but one is commented and can be changed according as necessary.
-Then from line ~203 to ~220 is mobility configuration.
+Then from line ~227 to ~265 is mobility configuration.
 You can set a model of constant mobility or another one based on acceleration and timeout.
 This can also be changed according as necessary.
-Then from line ~220 to ~242 is an important file, where all nodes in the simulation are given a name and a tap name.
+Then from line ~267 to ~287 is an important file, where all nodes in the simulation are given a name and a tap name.
 This will be used to link the nodes in the simulation with the corresponding linux bridges which finally will be connected to a container.
-And from line ~242 is just random simulation lines.
-The animation code in this file, it generates a animation.xml file which as far as I know for the time being it does not work correctly with tap bridges, therefore it does not work :(.
+And from line ~290 is just simulation lines.
+
+
+NS3 has the ability to create an animation file, it generates a animation.xml file which as far as I know for the time being it does not work correctly with tap bridges, therefore it does not work :(.
+
+
 In general in this file you can change data mode, the model of packet loss, MAC protocol, checksum of packets, position, mobility, anything.
 And that is it, this can changed as you wish, make sure you understand how NS3 works before doing so.
 
 ### update.sh
 
-This file is a simple script used by main.py to copy the main NS3 file, which is expected as a parameter into the corresponding NS3 scratch source folder.
+This file is a simple script used by main.new.py to copy the main NS3 file, which is expected as a parameter into the corresponding NS3 scratch source folder.
 This script is only one line but I did it like this so it could be totally apart from the main script, therefore if something else was needed it would be the job of this script, luckily it never happened such thing therefore the script remained as 1 line.
 Maybe in future versions we could incorporate it into the main script.
 
@@ -62,7 +74,7 @@ Before I continue, this information can be found in this references ... NONETHEL
 * [Docker Reference Architecture: Designing Scalable, Portable Docker Container Networks](https://success.docker.com/Architecture/Docker_Reference_Architecture%3A_Designing_Scalable%2C_Portable_Docker_Container_Networks)
 * [Docker Networking With Plugin](https://medium.com/@tugba/docker-networking-with-plugin-8fc3ce97444)
 
-The files "setup.sh" and "destroy.sh" are from initial experiments, therefore they do not do anything from the main.py perspective.
+The files "setup.sh" and "destroy.sh" are from initial experiments, therefore they do not do anything from the main.new.py perspective.
 
 ### singleSetup.sh
 
@@ -83,7 +95,7 @@ The bridges-nf-* can be:
 * bridge-nf-call-ip6tables
 * bridge-nf-call-iptables
 
-And the fact that they have 0 it means that the traffic going throught the bridges should not go to the arptables, ip6tables and iptables of the host.
+And the fact that they have 0 it means that the traffic going through the bridges should not go to the arptables, ip6tables and iptables of the host.
 This is done just one time after the singleSetup is ran for each node of NS3.
 
 ### container.sh
@@ -101,16 +113,20 @@ Therefore inside the container we will know that everything is ok when we are ab
 
 ### singleDestroy.sh
 
-Simply destroys the tap interface and the intermediary bridge. The internal and external bridges are destroyed by docker when the corresponding docker container is destroyed. The namespace created by this scripts is removed by main.py.
+Simply destroys the tap interface and the intermediary bridge. The internal and external bridges are destroyed by docker when the corresponding docker container is destroyed. The namespace created by this scripts is removed by main.new.py.
 
 -----
+
+## Known issues
 
 One big problem that this simulator has been dragging is that due to this manual network configuration of the container, the container itself will never recognize its own IP. For example, if you run the simulator, and through a script you want to get the ipconfig of eth0, it will show you the ip and everything. But if you try the same from the host computer and do a docker inspect, the container will not have an IP, since it was started as a net=none and then manually assigned the interface. This could be solved either by doing some research engineering for the current network interfaces, to see how they work or to develop a custom plugin for network for this simulator.
 This could provide some light into the plugin direction [Docker Networking With Plugin](https://medium.com/@tugba/docker-networking-with-plugin-8fc3ce97444).
 
 -----
 
-Second issue, when dealing with a lot of containers, some options are wish if they are tunned. I ran into problems with 40 to 60 nodes already, because the host was creating and deleting so much containers in so little time. For this refer to this [Running 1,000 Containers in Docker Swarm](https://blog.codeship.com/running-1000-containers-in-docker-swarm/)
+Second issue (*FIXED*), when dealing with a lot of containers, some options are wish if they are tunned. I ran into problems with 40 to 60 nodes already, because the host was creating and deleting so much containers in so little time. For this refer to this [Running 1,000 Containers in Docker Swarm](https://blog.codeship.com/running-1000-containers-in-docker-swarm/)
+
+*EDIT:* This was fixed as part of changing the flow of the emulation.
 
 -----
 

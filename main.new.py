@@ -113,8 +113,8 @@ def main():
         destroy()
     elif operation == "ns3":
         ns3()
-    elif operation == "simulation":
-        run_sim()
+    elif operation == "emulation":
+        run_emu()
     else:
         print("Nothing to be done ...")
 
@@ -302,9 +302,9 @@ def ns3():
 
 
 ################################################################################
-# run_sim ()
+# run_emu ()
 ################################################################################
-def run_sim():
+def run_emu():
     print("RUN SIM ...")
 
     print('About to start RUN SIM | Date now: %s' % datetime.datetime.now())
