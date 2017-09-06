@@ -20,7 +20,6 @@ RUN ldd /go/bin/Beacon | grep -q "not a dynamic executable"
 FROM scratch
 
 COPY wrapper.sh /wrapper.sh
-RUN chmod +x /wrapper.sh
 COPY --from=builder /go/bin/Beacon /beacon
 CMD /wrapper.sh
 
