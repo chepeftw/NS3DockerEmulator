@@ -12,7 +12,7 @@ RUN go get && CGO_ENABLED=0 go install -a -tags netgo -ldflags '-extldflags "-st
 
 COPY wrapper.sh ./
 
-RUN ldd /go/bin/github.com/chepeftw/beacon | grep -q "not a dynamic executable"
+RUN ldd /go/bin/Beacon | grep -q "not a dynamic executable"
 
 
 ############################################################
@@ -21,7 +21,7 @@ RUN ldd /go/bin/github.com/chepeftw/beacon | grep -q "not a dynamic executable"
 
 FROM scratch
 
-COPY --from=builder /go/bin/github.com/chepeftw/beacon /beacon
+COPY --from=builder /go/bin/Beacon /beacon
 CMD ["/wrapper.sh"]
 
 # docker build -t hello-world-multi-stage .
