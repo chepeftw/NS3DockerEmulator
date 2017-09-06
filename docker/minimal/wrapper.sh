@@ -19,10 +19,11 @@ echo "---------------------------------------------"
 # Start the first process
 echo "Starting Beacon ... " >> /var/log/golang/wrapper.log
 echo "/beacon /beacon_conf/conf1.yml &" >> /var/log/golang/wrapper.log
-/router /beacon_conf/conf1.yml &
+
+/beacon /beacon_conf/conf1.yml &
 status=$?
 if [ $status -ne 0 ]; then
-  echo "Failed to start router process: $status"
+  echo "Failed to start beacon process: $status"
   exit $status
 fi
 
