@@ -59,7 +59,7 @@ NS3 has the ability to create an animation file, it generates a animation.xml fi
 In general in this file you can change data mode, the model of packet loss, MAC protocol, checksum of packets, position, mobility, anything.
 And that is it, this can changed as you wish, make sure you understand how NS3 works before doing so.
 
-### update.sh
+#### update.sh
 
 This file is a simple script used by main.new.py to copy the main NS3 file, which is expected as a parameter into the corresponding NS3 scratch source folder.
 This script is only one line but I did it like this so it could be totally apart from the main script, therefore if something else was needed it would be the job of this script, luckily it never happened such thing therefore the script remained as 1 line.
@@ -76,7 +76,7 @@ Before I continue, this information can be found in this references ... NONETHEL
 
 The files "setup.sh" and "destroy.sh" are from initial experiments, therefore they do not do anything from the main.new.py perspective.
 
-### singleSetup.sh
+#### singleSetup.sh
 
 This file creates a bridge with the tool brctl (ethernet bridge administration) and a TAP interface with the tool tunctl (create and manage persistent TUN/TAP interfaces).
 Then the tap interface is configured in promisc mode, added to the bridge and started.
@@ -87,7 +87,7 @@ So the NS3 nodes will try to connect to the tap-$NAME device, since this is conn
 In this script we rely on NS3 to find the corresponding tap device based on the name, remember lines ~220 to ~242 from tap-wifi-virtual-machine.cc?
 This lines tell NS3 which tap device to look, therefore it is important that both use the same names.
 
-### singleEndSetup.sh
+#### singleEndSetup.sh
 
 This file ensures that the bridges-nf-* have a 0, therefore that they are turned off.
 The bridges-nf-* can be:
@@ -98,7 +98,7 @@ The bridges-nf-* can be:
 And the fact that they have 0 it means that the traffic going through the bridges should not go to the arptables, ip6tables and iptables of the host.
 This is done just one time after the singleSetup is ran for each node of NS3.
 
-### container.sh
+#### container.sh
 
 This script receives the name and a index. The name is intended to be the same name for the docker and for the tap interface for NS3.
 The name does not needs to be the same as the other, but it makes everything easier and more "debugabble".
@@ -111,7 +111,7 @@ The idea of the index is to avoid clashes between IP addresses.
 It is worth mentioning that side B is configured as the eth0 of the container.
 Therefore inside the container we will know that everything is ok when we are able to see the eth0 up.
 
-### singleDestroy.sh
+#### singleDestroy.sh
 
 Simply destroys the tap interface and the intermediary bridge. The internal and external bridges are destroyed by docker when the corresponding docker container is destroyed. The namespace created by this scripts is removed by main.new.py.
 
@@ -124,7 +124,7 @@ This could provide some light into the plugin direction [Docker Networking With 
 
 -----
 
-Second issue (*FIXED*), when dealing with a lot of containers, some options are wish if they are tunned. I ran into problems with 40 to 60 nodes already, because the host was creating and deleting so much containers in so little time. For this refer to this [Running 1,000 Containers in Docker Swarm](https://blog.codeship.com/running-1000-containers-in-docker-swarm/)
+Second issue (*FIXED*), when dealing with a lot of containers, Docker ran into caching problems with the OS. I ran into problems with 40 to 60 nodes already, because the host was creating and deleting so much containers in so little time. For this refer to this [Running 1,000 Containers in Docker Swarm](https://blog.codeship.com/running-1000-containers-in-docker-swarm/)
 
 *EDIT:* This was fixed as part of changing the flow of the emulation.
 
@@ -132,6 +132,6 @@ Second issue (*FIXED*), when dealing with a lot of containers, some options are 
 
 So making a big summary.
 
-<img src="https://github.com/chepeftw/NS3DockerEmulator/raw/master/NS3DockerEmulatorSchema.jpg" alt="NS3 Docker Emulator Schema" style="width: 100%;">
+<img src="/NS3DockerEmulator/images/NS3DockerEmulatorSchema-min.jpg" alt="NS3 Docker Emulator Schema" style="width:100%;padding-top:30px;padding-bottom:30px">
 
 The singleSetup.sh takes care of all the tap interfaces and intermediary bridges. The singleEndSetup.sh it makes sure this bridges does not forward their traffic to the arptables and iptables of the host, we would not want this, is better if it goes directly from the container to NS3. Then we have container.sh which builds the internal and external bridge for every container, connects to the corresponding intermediary bridge and assigns MAC and IP address. And finally singleDestroy.sh will destroy everything.

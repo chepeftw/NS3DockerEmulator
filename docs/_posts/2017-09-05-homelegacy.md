@@ -42,7 +42,7 @@ The final publication was my inspiration and it appears to be the first paper in
 
 ### Running it
 
-<img src="/NS3DockerEmulator/diagrams/version1flow.png" alt="Version 1 Flow" style="width:100%;padding-top:30px;padding-bottom:30px">
+<img src="/NS3DockerEmulator/images/diagrams/version1flow.png" alt="Version 1 Flow" style="width:100%;padding-top:30px;padding-bottom:30px">
 
 For now it will run a [Beacon](https://github.com/chepeftw/Beacon) demo, which basically starts dockers, configures them and start a Beacon GoLang program in each docker that it is a beacon as the name suggest hehe, and it will broadcast a HelloWorld message through json and it will be logged into the host filesystem into ./var/log.
 

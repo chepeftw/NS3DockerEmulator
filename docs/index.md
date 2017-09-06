@@ -5,7 +5,7 @@ title: "Introduction to NS3 Docker Emulator"
 
 Network Emulator based on NS3 and Docker, with the help of NS3 docs, Docker docs and some ideas from some research papers.
 
-<img src="https://github.com/chepeftw/NS3DockerEmulator/raw/master/NS3DockerEmulatorSchema.jpg" alt="NS3 Docker Emulator Schema" style="width: 100%;">
+<img src="/NS3DockerEmulator/images/NS3DockerEmulatorSchema-min.jpg" alt="NS3 Docker Emulator Schema" style="width:100%;padding-top:30px;padding-bottom:30px">
 
 Make sure you have everything installed, for detailed instructions refer to the [Preliminaries](/NS3DockerEmulator/doc/preliminaries.html). You can also check the "install.sh" script provided by @ptrsen (Thank you very much 👍).
 
@@ -29,16 +29,16 @@ Then there has been multiple publications related to enhancing NS3 simulations w
 
 The final publication was my inspiration and it appears to be the first paper in consider the connection between NS3 and Docker.
 
-### Running it
+## Running it
 
-<img src="/NS3DockerEmulator/diagrams/version2flow.png" alt="Version 2 Flow" style="width:100%;padding-top:30px;padding-bottom:30px">
+<img src="/NS3DockerEmulator/images/diagrams/version2flow.png" alt="Version 2 Flow" style="width:100%;padding-top:30px;padding-bottom:30px">
 
 For now it will run a [Beacon](https://github.com/chepeftw/Beacon) demo, which basically is a GoLang program in each docker that it is a beacon as the name suggest hehe, and it will broadcast a HelloWorld message through json and it will be logged into the host filesystem into ./var/log.
 
 To run it you have 3 stages which will allow you to run highly scalable emulations.
 The following parameters are used among the 3 stages:
 - -n is for the number of nodes
-- -s is for the size of the network
+- -s is for the size of the network (e.g. if the value is 300, it means that the network will be 300mx300m)
 - operation string, it can be "create", "ns3", "emulation" or "destroy"
 
 #### Create
@@ -81,7 +81,28 @@ So this provide a solution and an idea of what was happening, but I thought that
 Therefore this "restart containers" loop was introduced.
 So with this new version 2 flow, the emulator will not run into Docker cache problems and it will save time in the process.
 
-### Next?
+## Advanced
+
+The main.new.py script has some more functionality out of the box. The already mentioned parameters are:
+
+- -n or \-\-number is for the number of nodes
+- -s or \-\-size is for the size of the network (e.g. if the value is 300, it means that the network will be 300mx300m)
+- operation string, it can be "create", "ns3", "emulation" or "destroy", keep it mind that it should go at the end
+
+The more advanced options are:
+
+- -ns or \-\-nodespeed is for the speed of the nodes in the NS3 simulation (e.g. if the value is 5, it means that the nodes will move at 5m/s)
+- -np or \-\-nodepause is for the pause in seconds of the nodes every random time in the NS3 simulation, if the value is 0 it will be continues moving
+
+And there are some "legacy" and "more advanced" (?) options:
+
+- -t or \-\-time *was* intended to set the time of the NS3 simulation. But now the idea is for the simulation to just run as much as possible since the mobility and everything happening inside the simulation is independent from what is happening on the outside. So it still there, but is not used. If you want to use it you have to change some code.
+- -c or \-\-count *was* intended to send to the nodes this information to "know" which iteration was. But I think it was not very useful for the moment when I tried to use it so it just remained there.
+- -j or \-\-jobs *was* intended to be used by the NS3 waf command but I think that flag is more intended for the compilation or I never found any major information about that as well. Therefore I stopped using it.
+- -to or \-\-timeout is the "more advanced" option. The idea is that is a property that I want to send to the application, so what I do is I write that property to a config file (a yaml file through the write_conf() method in main.new.py), then I read it from the application and use it. Therefore is quite useful to change "behaviors" without re-coding and enables you more control of the emulations from the outside.
+
+
+## Next?
 
 You can connect to the instances and start doing tasks like ping and watch the behavior. You can also go to the NS3 file and change the mobility patterns, size of the scenario, node density and any other parameter.
 

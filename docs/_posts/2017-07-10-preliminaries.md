@@ -82,6 +82,7 @@ This is understandable and you can find some explanations to this behavior.
 The bottomline is that NS3 tries to keep each node in sync, therefore if you have 100 nodes and if you have mobility for example, NS3 will try to keep up.
 This of course can imply that it would decrease the time for the nodes in order to keep everything in sync.
 It might sound kind of weird but it makes sense.
+
 So let's look for an example for it to make more sense:
 Let's say you have 100 nodes, with random mobility at some random speed, so every second, each node will move in different directions with different speeds.
 If we add some packages to the equation, it needs to keep up by making sure that nodes are in range, the signal and many other stuff that I could be ignoring.
@@ -90,8 +91,9 @@ Because in an attempt to keep everything in sync it would decrease the internal 
 Therefore this will lead you to unrealistic simulations and of course bad results.
 And this sometimes it can become noticeable even on small number of nodes as 50.
 It depends on what you are trying to do.
+
 In this simulator specific case, it gets even trickier because the Docker machines in the outside are operating at normal speed, meanwhile the NS3 simulation could be running in "slow motion".
-Therefore we need to optimize as much as we can the NS3 behavior in order to get the best results.
+Therefore we need to optimize as much as we can the NS3 behavior in order to get the desired results.
 
 So this being said, and if you dig in into the compile parameters of NS3, there are some stuff you can to enhance this.
 It requires to recompile NS3 and can take you some time but it is worth it.
@@ -102,13 +104,13 @@ Running NS3 optimized:
 ./waf distclean
 # we configure the compile options as optimized, disable examples, tests, python integration and static.
 ./waf -d optimized configure --disable-examples --disable-tests --disable-python --enable-static --no-task-lines
-# we recompile (this will take some time)
+# we recompile (this might take some time)
 ./waf
 ```
 
 ## Docker
 
-Reference ... https://docs.docker.com/engine/installation/linux/ubuntulinux/
+Reference ... [Get Docker CE for Ubuntu](https://docs.docker.com/engine/installation/linux/ubuntulinux/)
 
 To install Docker in Ubuntu 16.04 the steps are:
 
@@ -117,7 +119,7 @@ sudo apt install apt-transport-https ca-certificates
 sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
 echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list
 sudo apt update
-sudo apt install docker-engine
+sudo apt install docker-ce
 ```
 
 To start the service you can run:
@@ -133,11 +135,11 @@ sudo docker run hello-world
 sudo docker run -it ubuntu bash
 ```
 
-You can "remove" the fact that you need to use "sudo" everytime you call docker, you can find this info in the reference link.
+You can "remove" the fact that you need to use "sudo" every time you call docker, you can find this info in the reference link.
 
 ## Network Bridges
 
-You need to install the following packages for easy bridge managment:
+You need to install the following packages for easy bridge management:
 
 ```bash
 sudo apt install bridge-utils # for  brctl
