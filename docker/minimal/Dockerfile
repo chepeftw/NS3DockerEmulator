@@ -17,9 +17,10 @@ RUN ldd /go/bin/Beacon | grep -q "not a dynamic executable"
 # Run stage
 ############################################################
 
-FROM scratch
+FROM alpine
 
 COPY wrapper.sh /wrapper.sh
+RUN chmod +x /wrapper.sh
 COPY --from=builder /go/bin/Beacon /beacon
 CMD /wrapper.sh
 

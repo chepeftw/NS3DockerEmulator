@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 ETH0=$(ip a | grep eth0 | wc -l) # This is for ALPINE
 
