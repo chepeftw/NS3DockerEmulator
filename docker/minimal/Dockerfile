@@ -20,9 +20,9 @@ RUN ldd /go/bin/Beacon | grep -q "not a dynamic executable"
 FROM scratch
 
 COPY wrapper.sh /wrapper.sh
-RUN ["chmod", "+x", "/wrapper.sh"]
+RUN chmod +x /wrapper.sh
 COPY --from=builder /go/bin/Beacon /beacon
-CMD ["/wrapper.sh"]
+CMD /wrapper.sh
 
 # docker build -t hello-world-multi-stage .
 # docker run hello-world-multi-stage
