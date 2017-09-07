@@ -352,9 +352,9 @@ def run_emu():
     check_return_code_chill(acc_status, "Cleaning old netns and setting up new")
 
     print('Finished RUN SIM | Date now: %s' % datetime.datetime.now())
-    print('Letting the simulation run for %s' % str(numberOfNodes + 25))
+    print('Letting the simulation run for %s' % emulationTimeStr)
 
-    time.sleep(numberOfNodes + 25)
+    time.sleep(int(emulationTimeStr))
 
     print('Finished RUN SIM 2 | Date now: %s' % datetime.datetime.now())
 
