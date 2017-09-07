@@ -93,10 +93,11 @@ The more advanced options are:
 
 - -ns or \-\-nodespeed is for the speed of the nodes in the NS3 simulation (e.g. if the value is 5, it means that the nodes will move at 5m/s)
 - -np or \-\-nodepause is for the pause in seconds of the nodes every random time in the NS3 simulation, if the value is 0 it will be continues moving
+- -t or \-\-time is intended to set the time of the emulation. This means the time the script will wait before exiting the "emulation" operation. For example, if your program takes 30 seconds to run and complete a test, you might set the time to 50 seconds and allow 20 seconds for some initial scramble of the nodes.
 
 And there are some "legacy" and "more advanced" (?) options:
 
-- -t or \-\-time *was* intended to set the time of the NS3 simulation. But now the idea is for the simulation to just run as much as possible since the mobility and everything happening inside the simulation is independent from what is happening on the outside. So it still there, but is not used. If you want to use it you have to change some code.
+<!-- - -t or \-\-time *was* intended to set the time of the NS3 simulation. But now the idea is for the simulation to just run as much as possible since the mobility and everything happening inside the simulation is independent from what is happening on the outside. So it still there, but is not used. If you want to use it you have to change some code. -->
 - -c or \-\-count *was* intended to send to the nodes this information to "know" which iteration was. But I think it was not very useful for the moment when I tried to use it so it just remained there.
 - -j or \-\-jobs *was* intended to be used by the NS3 waf command but I think that flag is more intended for the compilation or I never found any major information about that as well. Therefore I stopped using it.
 - -to or \-\-timeout is the "more advanced" option. The idea is that is a property that I want to send to the application, so what I do is I write that property to a config file (a yaml file through the write_conf() method in main.new.py), then I read it from the application and use it. Therefore is quite useful to change "behaviors" without re-coding and enables you more control of the emulations from the outside.
