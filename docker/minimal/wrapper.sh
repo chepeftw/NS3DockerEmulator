@@ -34,13 +34,15 @@ fi
 # Otherwise it will loop forever, waking up every 60 seconds
 
 while /bin/true; do
-  PROCESS_1_STATUS=$(ps aux |grep -q "beacon /beacon_conf/conf1.yml" |grep -v grep)
 
-  echo "PROCESS_1_STATUS = $PROCESS_1_STATUS " >> /var/log/golang/wrapper.log
+  ps aux | grep beacon | grep -v grep
+  P1_STATUS=$?
+
+  echo "PROCESS1 STATUS = $P1_STATUS " >> /var/log/golang/wrapper.log
 
   # If the greps above find anything, they will exit with 0 status
   # If they are not both 0, then something is wrong
-  if [ $PROCESS_1_STATUS -ne 0 ]; then
+  if [ $P1_STATUS -ne 0 ]; then
     echo "One of the processes has already exited."
     exit -1
   fi
