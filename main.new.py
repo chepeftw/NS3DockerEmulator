@@ -177,7 +177,7 @@ def create():
     #############################
     # First and a half ... we generate the configuration yaml files.
 
-    write_conf(0, numberOfNodes, timeoutStr, 0, 10001, "conf.yml")
+    write_conf(0, numberOfNodes, timeoutStr, "10.12.0.0", 10001, "conf.yml")
 
     #############################
     # Second, we run the numberOfNodes of containers.
@@ -343,7 +343,7 @@ def run_emu():
 
     # syncConfigTime (s) = seconds + ~seconds
     sync_config_time = int(time.time()) + numberOfNodes
-    write_conf(sync_config_time, numberOfNodes, timeoutStr, 1, 10001, "conf.yml")
+    write_conf(sync_config_time, numberOfNodes, timeoutStr, "10.12.0.1", 10001, "conf.yml")
 
     acc_status = 0
     for x in range(0, numberOfNodes):
