@@ -19,7 +19,8 @@ codeurl: 'https://github.com/chepeftw/NS3DockerEmulator'
 
 # Default categories (in order) to appear in the navigation
 sections: [
-    ['doc', 'Documentation'],
+    ['doc', 'Documentation v2.0'],
+    ['legv1', 'Legacy version 1.0'],
     ['tut', 'Tutorial'],
     ['ref', 'Reference'],
     ['dev', 'Developers'],
