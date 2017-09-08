@@ -55,16 +55,22 @@ fi
 # if it detects that either of the processes has exited.
 # Otherwise it will loop forever, waking up every 60 seconds
 
+sleep 2
+
 while /bin/true; do
 
-  ps aux | grep "router /btc_conf/conf.yml" | grep -v grep
+  ps aux | grep router | grep -v grep
   P1_STATUS=$?
 
-  ps aux | grep "miner /btc_conf/conf.yml" | grep -v grep
+  ps aux | grep miner | grep -v grep
   P2_STATUS=$?
 
-  ps aux | grep "blockchain /btc_conf/conf.yml" | grep -v grep
+  ps aux | grep blockchain | grep -v grep
   P3_STATUS=$?
+
+  echo "PROCESS1 STATUS = $P1_STATUS |"
+  echo "PROCESS2 STATUS = $P2_STATUS |"
+  echo "PROCESS3 STATUS = $P3_STATUS |"
 
   echo "PROCESS1 STATUS = $P1_STATUS " >> /var/log/golang/wrapper.log
   echo "PROCESS2 STATUS = $P2_STATUS " >> /var/log/golang/wrapper.log
