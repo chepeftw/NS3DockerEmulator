@@ -177,7 +177,7 @@ def create():
     #############################
     # First and a half ... we generate the configuration yaml files.
 
-    write_conf(0, numberOfNodes, timeoutStr, 0, 10001, "conf1.yml")
+    write_conf(0, numberOfNodes, timeoutStr, 0, 10001, "conf.yml")
 
     #############################
     # Second, we run the numberOfNodes of containers.
@@ -205,7 +205,7 @@ def create():
         conf_host_path = dir_path + "/conf"
 
         volumes = "-v " + log_host_path + ":/var/log/golang "
-        volumes += "-v " + conf_host_path + ":/beacon_conf "
+        volumes += "-v " + conf_host_path + ":/blockchain "
 
         print("VOLUMES: " + volumes)
 
@@ -343,7 +343,7 @@ def run_emu():
 
     # syncConfigTime (s) = seconds + ~seconds
     sync_config_time = int(time.time()) + numberOfNodes
-    write_conf(sync_config_time, numberOfNodes, timeoutStr, 1, 10001, "conf1.yml")
+    write_conf(sync_config_time, numberOfNodes, timeoutStr, 1, 10001, "conf.yml")
 
     acc_status = 0
     for x in range(0, numberOfNodes):
@@ -367,7 +367,11 @@ def write_conf(target, nodes, timeout, root, port, filename):
         'nodes': nodes,
         'timeout': int(timeout),
         'rootnode': root,
-        'port': port
+        'port': port,
+        'miningretry': 100,
+        'miningwait': 100,
+        'piece': "00",
+        'logpath': "/var/log/golang"
     }
     filename = "conf/" + filename
     with open(filename, 'w') as yaml_file:
