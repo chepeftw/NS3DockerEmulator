@@ -205,7 +205,7 @@ def create():
         conf_host_path = dir_path + "/conf"
 
         volumes = "-v " + log_host_path + ":/var/log/golang "
-        volumes += "-v " + conf_host_path + ":/blockchain "
+        volumes += "-v " + conf_host_path + ":/btc_conf "
 
         print("VOLUMES: " + volumes)
 

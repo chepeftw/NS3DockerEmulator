@@ -18,9 +18,9 @@ echo "---------------------------------------------"
 
 # Start the first process
 echo "Starting Router ... " >> /var/log/golang/wrapper.log
-echo "/router /blockchain/conf.yml &" >> /var/log/golang/wrapper.log
+echo "/router /btc_conf/conf.yml &" >> /var/log/golang/wrapper.log
 
-/router /blockchain/conf.yml &
+/router /btc_conf/conf.yml &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start router process: $status"
@@ -29,9 +29,9 @@ fi
 
 # Start the second process
 echo "Starting Miner ... " >> /var/log/golang/wrapper.log
-echo "/miner /blockchain/conf.yml &" >> /var/log/golang/wrapper.log
+echo "/miner /btc_conf/conf.yml &" >> /var/log/golang/wrapper.log
 
-/miner /blockchain/conf.yml &
+/miner /btc_conf/conf.yml &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start miner process: $status"
@@ -40,9 +40,9 @@ fi
 
 # Start the third process
 echo "Starting Blockchain (Monitor) ... " >> /var/log/golang/wrapper.log
-echo "/blockchain /blockchain/conf.yml &" >> /var/log/golang/wrapper.log
+echo "/blockchain /btc_conf/conf.yml &" >> /var/log/golang/wrapper.log
 
-/blockchain /blockchain/conf.yml &
+/blockchain /btc_conf/conf.yml &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start blockchain process: $status"
@@ -57,13 +57,13 @@ fi
 
 while /bin/true; do
 
-  ps aux | grep "router /blockchain/conf.yml" | grep -v grep
+  ps aux | grep "router /btc_conf/conf.yml" | grep -v grep
   P1_STATUS=$?
 
-  ps aux | grep "miner /blockchain/conf.yml" | grep -v grep
+  ps aux | grep "miner /btc_conf/conf.yml" | grep -v grep
   P2_STATUS=$?
 
-  ps aux | grep "blockchain /blockchain/conf.yml" | grep -v grep
+  ps aux | grep "blockchain /btc_conf/conf.yml" | grep -v grep
   P3_STATUS=$?
 
   echo "PROCESS1 STATUS = $P1_STATUS " >> /var/log/golang/wrapper.log
