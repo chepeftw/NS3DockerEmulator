@@ -93,7 +93,7 @@ The more advanced options are:
 
 - -ns or \-\-nodespeed is for the speed of the nodes in the NS3 simulation (e.g. if the value is 5, it means that the nodes will move at 5m/s)
 - -np or \-\-nodepause is for the pause in seconds of the nodes every random time in the NS3 simulation, if the value is 0 it will be continues moving
-- -t or \-\-time is intended to set the time of the emulation. This means the time the script will wait before exiting the "emulation" operation. For example, if your program takes 30 seconds to run and complete a test, you might set the time to 50 seconds and allow 20 seconds for some initial scramble of the nodes.
+- -t or \-\-time is intended to set the time of the emulation. This means the time the script will wait before exiting the "emulation" operation. For example, if your program takes 30 seconds to run and complete a test, you might set the time to 50 seconds and allow 20 seconds for some initial shuffle of the nodes in the network.
 
 And there are some "legacy" and "more advanced" (?) options:
 
