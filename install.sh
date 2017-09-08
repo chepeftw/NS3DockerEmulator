@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script install all the required packages for The NS3DockerEmulator  https://github.com/chepeftw/NS3DockerEmulator 
-# Ns3.25 and Docker 17.06 
+# Ns3.26 and Docker 17.06
 # To running , open Terminal and execute  
 # source install.sh
 
@@ -33,12 +33,12 @@ echo "export PYTHONPATH=$PYTHONPATH:$BAKE_HOME:$BAKE_HOME/build/lib" >> ~/.bashr
 source ~/.bashrc
 
 python $BAKE_HOME/bake.py check
-python $BAKE_HOME/bake.py configure -e ns-3.25
+python $BAKE_HOME/bake.py configure -e ns-3.26
 python $BAKE_HOME/bake.py download
 python $BAKE_HOME/bake.py build
 
 echo -e "\n\n Verifying Ns3  ... \n" 
-cd source/ns-3.25
+cd source/ns-3.26
 ./waf
 
 echo -e "\n\n Recompoling NS3 in optimized mode  ... \n"
