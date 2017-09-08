@@ -17,13 +17,35 @@ echo "---------------------------------------------"
 
 
 # Start the first process
-echo "Starting Beacon ... " >> /var/log/golang/wrapper.log
-echo "/beacon /beacon_conf/conf1.yml &" >> /var/log/golang/wrapper.log
+echo "Starting Router ... " >> /var/log/golang/wrapper.log
+echo "/router /blockchain/conf.yml &" >> /var/log/golang/wrapper.log
 
-/beacon /beacon_conf/conf1.yml &
+/router /blockchain/conf.yml &
 status=$?
 if [ $status -ne 0 ]; then
-  echo "Failed to start beacon process: $status"
+  echo "Failed to start router process: $status"
+  exit $status
+fi
+
+# Start the second process
+echo "Starting Miner ... " >> /var/log/golang/wrapper.log
+echo "/miner /blockchain/conf.yml &" >> /var/log/golang/wrapper.log
+
+/miner /blockchain/conf.yml &
+status=$?
+if [ $status -ne 0 ]; then
+  echo "Failed to start miner process: $status"
+  exit $status
+fi
+
+# Start the third process
+echo "Starting Blockchain (Monitor) ... " >> /var/log/golang/wrapper.log
+echo "/blockchain /blockchain/conf.yml &" >> /var/log/golang/wrapper.log
+
+/blockchain /blockchain/conf.yml &
+status=$?
+if [ $status -ne 0 ]; then
+  echo "Failed to start blockchain process: $status"
   exit $status
 fi
 
@@ -35,16 +57,33 @@ fi
 
 while /bin/true; do
 
-  ps aux | grep beacon | grep -v grep
+  ps aux | grep "router /blockchain/conf.yml" | grep -v grep
   P1_STATUS=$?
 
+  ps aux | grep "miner /blockchain/conf.yml" | grep -v grep
+  P2_STATUS=$?
+
+  ps aux | grep "blockchain /blockchain/conf.yml" | grep -v grep
+  P3_STATUS=$?
+
   echo "PROCESS1 STATUS = $P1_STATUS " >> /var/log/golang/wrapper.log
+  echo "PROCESS2 STATUS = $P2_STATUS " >> /var/log/golang/wrapper.log
+  echo "PROCESS3 STATUS = $P3_STATUS " >> /var/log/golang/wrapper.log
 
   # If the greps above find anything, they will exit with 0 status
   # If they are not both 0, then something is wrong
   if [ $P1_STATUS -ne 0 ]; then
-    echo "One of the processes has already exited."
+    echo "Router has already exited."
     exit -1
   fi
+  if [ $P2_STATUS -ne 0 ]; then
+    echo "Miner has already exited."
+    exit -1
+  fi
+  if [ $P3_STATUS -ne 0 ]; then
+    echo "Blockchain has already exited."
+    exit -1
+  fi
+
   sleep 60
 done
