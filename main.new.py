@@ -21,6 +21,8 @@ nodeSpeed = '5'
 nodePause = '1'
 simulationCount = 0
 
+cryptoPiece = "00"
+
 numberOfNodes = 0
 jobs = 1
 nameList = []
@@ -41,6 +43,7 @@ def main():
         scenarioSize, \
         numberOfNodes, \
         nameList, \
+        cryptoPiece, \
         jobs
     print("Main ...")
 
@@ -68,6 +71,8 @@ def main():
 
     parser.add_argument("-j", "--jobs", action="store", help="The number of parallel jobs")
 
+    parser.add_argument("-cp", "--cryptopiece", action="store", help="The piece for the cryptopuzzle")
+
     parser.add_argument('-v', '--version', action='version', version='%(prog)s 2.0')
     args = parser.parse_args()
 
@@ -83,6 +88,8 @@ def main():
         nodeSpeed = args.nodespeed
     if args.nodepause:
         nodePause = args.nodepause
+    if args.cryptopiece:
+        cryptoPiece = args.cryptopiece
     if args.count:
         simulationCount = int(args.count)
     if args.jobs:
@@ -99,6 +106,7 @@ def main():
     print("Node Pause : %s" % nodePause)
     print("Simulation Count : %s" % simulationCount)
     print("Scenario Size : %s x %s" % (scenarioSize, scenarioSize))
+    print("Crypto Piece : %s" % cryptoPiece)
 
     numberOfNodes = int(numberOfNodesStr)
 
@@ -177,7 +185,7 @@ def create():
     #############################
     # First and a half ... we generate the configuration yaml files.
 
-    write_conf(0, numberOfNodes, timeoutStr, "10.12.0.0", 10001, "conf.yml")
+    write_conf(0, numberOfNodes, timeoutStr, "10.12.0.0", 10001, "conf.yml", cryptoPiece)
 
     #############################
     # Second, we run the numberOfNodes of containers.
@@ -343,7 +351,7 @@ def run_emu():
 
     # syncConfigTime (s) = seconds + ~seconds
     sync_config_time = int(time.time()) + numberOfNodes
-    write_conf(sync_config_time, numberOfNodes, timeoutStr, "10.12.0.1", 10001, "conf.yml")
+    write_conf(sync_config_time, numberOfNodes, timeoutStr, "10.12.0.1", 10001, "conf.yml", cryptoPiece)
 
     acc_status = 0
     for x in range(0, numberOfNodes):
@@ -361,7 +369,7 @@ def run_emu():
     return
 
 
-def write_conf(target, nodes, timeout, root, port, filename):
+def write_conf(target, nodes, timeout, root, port, filename, piece):
     config = {
         'target': target,
         'nodes': nodes,
@@ -370,7 +378,7 @@ def write_conf(target, nodes, timeout, root, port, filename):
         'port': port,
         'miningretry': 100,
         'miningwait': 100,
-        'piece': "00",
+        'piece': piece,
         'logpath': "/var/log/golang"
     }
     filename = "conf/" + filename
