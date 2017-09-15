@@ -376,7 +376,7 @@ def write_conf(target, nodes, timeout, root, port, filename, piece):
         'timeout': int(timeout),
         'rootnode': root,
         'port': port,
-        'miningretry': 100,
+        'miningretry': 1000,
         'miningwait': 100,
         'piece': piece,
         'logpath': "/var/log/golang"
