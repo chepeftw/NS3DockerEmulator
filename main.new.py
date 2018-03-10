@@ -177,7 +177,7 @@ def create():
     #############################
     # First and a half ... we generate the configuration yaml files.
 
-    write_conf(0, numberOfNodes, timeoutStr, 0, 10001, "conf1.yml")
+    write_conf(0, numberOfNodes, timeoutStr, 0, 10001, "conf.yml")
 
     #############################
     # Second, we run the numberOfNodes of containers.
@@ -205,12 +205,15 @@ def create():
         conf_host_path = dir_path + "/conf"
 
         volumes = "-v " + log_host_path + ":/var/log/golang "
-        volumes += "-v " + conf_host_path + ":/beacon_conf "
+        volumes += "-v " + conf_host_path + ":/app "
+
+        environmentVariables = "--env RAFT_PORT=10123 "
+        environmentVariables += "--env RAFT_TIMEOUT=11000"
 
         print("VOLUMES: " + volumes)
 
         acc_status += subprocess.call(
-            "docker run --privileged -dit --net=none %s --name %s %s" % (volumes, nameList[x], baseContainerNameMin),
+            "docker run --privileged -dit --net=none %s %s --name %s %s" % (volumes, environmentVariables, nameList[x], baseContainerNameMin),
             shell=True)
 
     # If something went wrong running the docker containers, we panic and exit
@@ -343,7 +346,7 @@ def run_emu():
 
     # syncConfigTime (s) = seconds + ~seconds
     sync_config_time = int(time.time()) + numberOfNodes
-    write_conf(sync_config_time, numberOfNodes, timeoutStr, 1, 10001, "conf1.yml")
+    write_conf(sync_config_time, numberOfNodes, timeoutStr, 1, 10001, "conf.yml")
 
     acc_status = 0
     for x in range(0, numberOfNodes):
