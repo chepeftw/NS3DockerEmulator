@@ -281,8 +281,7 @@ def create():
 def ns3():
     print("NS3 ...")
 
-    # total_emu_time = (5 * 60) * numberOfNodes
-    total_emu_time = 300
+    total_emu_time = (5 * 60) * numberOfNodes
 
     print('About to start NS3 RUN  with total emulation time of %s' % str(total_emu_time))
 
