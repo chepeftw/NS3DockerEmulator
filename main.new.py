@@ -155,7 +155,7 @@ def create():
     # r_code = subprocess.call("docker build -t %s docker/mybase/." % baseContainerName0, shell=True)
     # check_return_code(r_code, "Building regular container %s" % baseContainerName0)
 
-    r_code = subprocess.call("docker build -t %s docker/minimal/." % baseContainerNameMin, shell=True)
+    r_code = subprocess.call("docker build --no-cache -t %s docker/minimal/." % baseContainerNameMin, shell=True)
     check_return_code(r_code, "Building minimal container %s" % baseContainerNameMin)
 
     r_code = subprocess.call("cd ns3 && bash update.sh tap-wifi-virtual-machine.cc", shell=True)
