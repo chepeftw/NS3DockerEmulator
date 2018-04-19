@@ -14,7 +14,7 @@ numberOfNodesStr = '20'
 emulationTimeStr = '600'
 scenarioSize = '300'
 noBuildCacheDocker = ''
-timeoutStr = '800'
+timeoutStr = '1400'
 mode = 'single'
 rootNode = '10.12.0.1'
 nodeSpeed = '5'
@@ -207,13 +207,13 @@ def create():
         volumes = "-v " + log_host_path + ":/var/log/golang "
         volumes += "-v " + conf_host_path + ":/app "
 
-        environmentVariables = "--env RAFT_PORT=10123 "
-        environmentVariables += "--env RAFT_TIMEOUT=11000"
+        environment_variables = "--env RAFT_PORT=10123 "
+        environment_variables += "--env RAFT_TIMEOUT="+timeoutStr
 
         print("VOLUMES: " + volumes)
 
         acc_status += subprocess.call(
-            "docker run --privileged -dit --net=none %s %s --name %s %s" % (volumes, environmentVariables, nameList[x], baseContainerNameMin),
+            "docker run --privileged -dit --net=none %s %s --name %s %s" % (volumes, environment_variables, nameList[x], baseContainerNameMin),
             shell=True)
 
     # If something went wrong running the docker containers, we panic and exit
@@ -370,7 +370,8 @@ def write_conf(target, nodes, timeout, root, port, filename):
         'nodes': nodes,
         'timeout': int(timeout),
         'rootnode': root,
-        'port': port
+        'port': port,
+        'raftsa': 2
     }
     filename = "conf/" + filename
     with open(filename, 'w') as yaml_file:
