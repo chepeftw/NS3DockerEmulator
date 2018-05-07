@@ -39,7 +39,7 @@ RUN go get \
 
 FROM alpine
 
-COPY --from=builder /go/src/github.com/chepeftw/raft/wrapper.sh /wrapper.sh
+COPY wrapper.sh /wrapper.sh
 COPY --from=builder /go/bin/raft /raft
 COPY --from=builder /go/bin/blockchainrouterlayer /router
 COPY --from=builder /go/bin/blockchainminer /miner
