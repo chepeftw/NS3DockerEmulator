@@ -371,7 +371,7 @@ def write_conf(target, nodes, timeout, root, port, filename):
         'timeout': int(timeout),
         'rootnode': root,
         'port': port,
-        'raftsa': 2
+        'raftsa': 0
     }
     filename = "conf/" + filename
     with open(filename, 'w') as yaml_file:
