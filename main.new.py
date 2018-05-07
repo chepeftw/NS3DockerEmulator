@@ -158,12 +158,16 @@ def create():
     r_code = subprocess.call("docker build --no-cache -t %s docker/minimal/." % baseContainerNameMin, shell=True)
     check_return_code(r_code, "Building minimal container %s" % baseContainerNameMin)
 
+    time.sleep(20)
+
     r_code = subprocess.call("cd ns3 && bash update.sh tap-wifi-virtual-machine.cc", shell=True)
     if r_code != 0:
         print("Error copying latest ns3 file")
     else:
         print("NS3 up to date!")
         print("Go to NS3 folder, probably cd $NS3_HOME")
+
+    time.sleep(20)
 
     r_code = subprocess.call("cd $NS3_HOME && ./waf build -j {} -d optimized --disable-examples".format(jobs),
                              shell=True)
@@ -173,6 +177,8 @@ def create():
         print("NS3 BUILD FAIL!")
 
     print('NS3 Build finished | Date now: %s' % datetime.datetime.now())
+
+    time.sleep(20)
 
     #############################
     # First and a half ... we generate the configuration yaml files.
@@ -373,6 +379,10 @@ def write_conf(target, nodes, timeout, root, port, filename):
         'port': port,
         'raftsa': 0
     }
+
+    # raftsa = 0 ... means working with something else
+    # raftsa = 2 ... means working stand alone
+
     filename = "conf/" + filename
     with open(filename, 'w') as yaml_file:
         yaml.dump(config, yaml_file, default_flow_style=False)
