@@ -12,6 +12,10 @@ RUN git clone https://github.com/chepeftw/raft.git \
     && git clone https://github.com/chepeftw/blockchainminer.git \
     && git clone https://github.com/chepeftw/blockchainmanet.git
 
+WORKDIR /go/src/github.com/chepeftw/bchainlibs
+RUN go get \
+    && go build
+
 WORKDIR /go/src/github.com/chepeftw/raft
 RUN go get \
     && CGO_ENABLED=0 go install -a -tags netgo -ldflags '-extldflags "-static"' \
