@@ -174,8 +174,8 @@ def create():
     time.sleep(20)
     print("--------------------------------------------------------------------------")
 
-    r_code = subprocess.call("cd $NS3_HOME && ./waf build -j {} -d optimized --disable-examples --disable-tests --disable-python --enable-modules=antenna,bridge,core,csma,mesh,mobility,network,propagation,tap-bridge,virtual-net-device,wave,wifi".format(jobs),
-                             shell=True)
+    r_code = subprocess.call("cd $NS3_HOME && ./waf configure --disable-examples --disable-tests --disable-python --enable-modules=antenna,bridge,core,csma,mesh,mobility,network,propagation,tap-bridge,virtual-net-device,wave,wifi".format(jobs), shell=True)
+    r_code = subprocess.call("cd $NS3_HOME && ./waf build -j {} -d optimized --disable-examples --disable-tests ".format(jobs), shell=True)
     if r_code == 0:
         print("NS3 BUILD WIN!")
     else:
