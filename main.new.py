@@ -159,6 +159,7 @@ def create():
     check_return_code(r_code, "Building minimal container %s" % baseContainerNameMin)
 
     time.sleep(20)
+    print("--------------------------------------------------------------------------")
 
     r_code = subprocess.call("cd ns3 && bash update.sh tap-wifi-virtual-machine.cc", shell=True)
     if r_code != 0:
@@ -169,6 +170,7 @@ def create():
     print("Go to NS3 folder, probably cd $NS3_HOME")
 
     time.sleep(20)
+    print("--------------------------------------------------------------------------")
 
     r_code = subprocess.call("cd $NS3_HOME && ./waf build -j {} -d optimized --disable-examples".format(jobs),
                              shell=True)
@@ -180,6 +182,7 @@ def create():
     print('NS3 Build finished | Date now: %s' % datetime.datetime.now())
 
     time.sleep(20)
+    print("--------------------------------------------------------------------------")
 
     #############################
     # First and a half ... we generate the configuration yaml files.
