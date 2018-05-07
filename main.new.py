@@ -158,6 +158,7 @@ def create():
     r_code = subprocess.call("docker build --no-cache -t %s docker/minimal/." % baseContainerNameMin, shell=True)
     check_return_code(r_code, "Building minimal container %s" % baseContainerNameMin)
 
+    print("--------------------------------------------------------------------------")
     time.sleep(20)
     print("--------------------------------------------------------------------------")
 
@@ -169,6 +170,7 @@ def create():
 
     print("Go to NS3 folder, probably cd $NS3_HOME")
 
+    print("--------------------------------------------------------------------------")
     time.sleep(20)
     print("--------------------------------------------------------------------------")
 
@@ -181,6 +183,7 @@ def create():
 
     print('NS3 Build finished | Date now: %s' % datetime.datetime.now())
 
+    print("--------------------------------------------------------------------------")
     time.sleep(20)
     print("--------------------------------------------------------------------------")
 
@@ -230,7 +233,9 @@ def create():
     check_return_code(acc_status, "Running docker containers")
 
     time.sleep(1)
+    print("--------------------------------------------------------------------------")
     print('Finished running containers | Date now: %s' % datetime.datetime.now())
+    print("--------------------------------------------------------------------------")
 
     #############################
     # Third, we create the bridges and the tap interfaces for NS3
@@ -249,7 +254,9 @@ def create():
         os.makedirs(pidsDirectory)
 
     time.sleep(1)
+    print("--------------------------------------------------------------------------")
     print('Finished creating bridges and taps | Date now: %s' % datetime.datetime.now())
+    print("--------------------------------------------------------------------------")
 
     #############################
     # Fourth, we create the bridges for the docker containers
@@ -276,6 +283,7 @@ def create():
     print("Done.")
 
     print('Finished setting up bridges | Date now: %s' % datetime.datetime.now())
+    print("--------------------------------------------------------------------------")
 
     return
 
