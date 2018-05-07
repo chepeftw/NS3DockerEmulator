@@ -364,7 +364,7 @@ def run_emu():
 
     # syncConfigTime (s) = seconds + ~seconds
     sync_config_time = int(time.time()) + numberOfNodes
-    write_conf(sync_config_time, numberOfNodes, timeoutStr, 1, 10001, "conf.yml")
+    write_conf(sync_config_time, numberOfNodes, timeoutStr, rootNode, 10001, "conf.yml")
 
     acc_status = 0
     for x in range(0, numberOfNodes):
