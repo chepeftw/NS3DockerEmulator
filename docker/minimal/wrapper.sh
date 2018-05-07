@@ -87,10 +87,10 @@ while /bin/true; do
   ps aux | grep router | grep -v grep
   P4_STATUS=$?
 
-  echo "PROCESS1 STATUS = ${P1_STATUS} " >> /var/log/golang/wrapper.log
-  echo "PROCESS2 STATUS = ${P2_STATUS} " >> /var/log/golang/wrapper.log
-  echo "PROCESS3 STATUS = ${P3_STATUS} " >> /var/log/golang/wrapper.log
-  echo "PROCESS4 STATUS = ${P4_STATUS} " >> /var/log/golang/wrapper.log
+  echo "RAFT STATUS = ${P1_STATUS} " >> /var/log/golang/wrapper.log
+  echo "MINER STATUS = ${P2_STATUS} " >> /var/log/golang/wrapper.log
+  echo "BLOCKCHAIN STATUS = ${P3_STATUS} " >> /var/log/golang/wrapper.log
+  echo "ROUTER STATUS = ${P4_STATUS} " >> /var/log/golang/wrapper.log
 
   # If the greps above find anything, they will exit with 0 status
   # If they are not both 0, then something is wrong
