@@ -165,7 +165,8 @@ def create():
         print("Error copying latest ns3 file")
     else:
         print("NS3 up to date!")
-        print("Go to NS3 folder, probably cd $NS3_HOME")
+
+    print("Go to NS3 folder, probably cd $NS3_HOME")
 
     time.sleep(20)
 
