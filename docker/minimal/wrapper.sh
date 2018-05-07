@@ -96,22 +96,22 @@ while /bin/true; do
   # If they are not both 0, then something is wrong
   if [ $P1_STATUS -ne 0 ]; then
     echo "RAFT already exited."
-    exit -1
+    exit 1
   fi
 
   if [ $P2_STATUS -ne 0 ]; then
     echo "MINER already exited."
-    exit -1
+    exit 1
   fi
 
   if [ $P3_STATUS -ne 0 ]; then
     echo "BLOCKCHAIN already exited."
-    exit -1
+    exit 1
   fi
 
   if [ $P4_STATUS -ne 0 ]; then
     echo "ROUTER already exited."
-    exit -1
+    exit 1
   fi
 
   sleep 60
