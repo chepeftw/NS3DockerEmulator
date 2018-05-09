@@ -24,6 +24,7 @@ echo "/raft &" >> /var/log/golang/wrapper.log
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start raft process: $status"
+  echo "Failed to start raft process: $status" >> /var/log/golang/wrapper.log
   exit $status
 fi
 
@@ -37,6 +38,7 @@ echo "/miner &" >> /var/log/golang/wrapper.log
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start miner process: $status"
+  echo "Failed to start miner process: $status" >> /var/log/golang/wrapper.log
   exit $status
 fi
 
@@ -50,6 +52,7 @@ echo "/blockchain &" >> /var/log/golang/wrapper.log
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start blockchain process: $status"
+  echo "Failed to start blockchain process: $status" >> /var/log/golang/wrapper.log
   exit $status
 fi
 
@@ -63,6 +66,7 @@ echo "/router &" >> /var/log/golang/wrapper.log
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start router process: $status"
+  echo "Failed to start router process: $status" >> /var/log/golang/wrapper.log
   exit $status
 fi
 
@@ -87,31 +91,28 @@ while /bin/true; do
   ps aux | grep router | grep -v grep
   P4_STATUS=$?
 
-  echo "RAFT STATUS = ${P1_STATUS} " >> /var/log/golang/wrapper.log
-  echo "MINER STATUS = ${P2_STATUS} " >> /var/log/golang/wrapper.log
-  echo "BLOCKCHAIN STATUS = ${P3_STATUS} " >> /var/log/golang/wrapper.log
-  echo "ROUTER STATUS = ${P4_STATUS} " >> /var/log/golang/wrapper.log
+  echo "RAFT=${P1_STATUS}, MINER=${P2_STATUS}, BLOCKCHAIN=${P3_STATUS}, ROUTER=${P4_STATUS}" >> /var/log/golang/wrapper.log
 
   # If the greps above find anything, they will exit with 0 status
   # If they are not both 0, then something is wrong
   if [ $P1_STATUS -ne 0 ]; then
     echo "RAFT already exited."
-    exit 1
+#    exit 1
   fi
 
   if [ $P2_STATUS -ne 0 ]; then
     echo "MINER already exited."
-    exit 1
+#    exit 1
   fi
 
   if [ $P3_STATUS -ne 0 ]; then
     echo "BLOCKCHAIN already exited."
-    exit 1
+#    exit 1
   fi
 
   if [ $P4_STATUS -ne 0 ]; then
     echo "ROUTER already exited."
-    exit 1
+#    exit 1
   fi
 
   sleep 60
