@@ -77,6 +77,8 @@ fi
 # if it detects that either of the processes has exited.
 # Otherwise it will loop forever, waking up every 60 seconds
 
+sleep 5
+
 while /bin/true; do
 
   ps aux | grep raft | grep -v grep
