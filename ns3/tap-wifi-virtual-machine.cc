@@ -109,17 +109,23 @@ main (int argc, char *argv[])
   // ++++++++++++++++++++++++++++++++++++
 
   std::stringstream ssSpeed;
-  ssSpeed << "ns3::ConstantRandomVariable[Constant=" << nodeSpeed << "]";
+  ssSpeed << "ns3::ConstantRandomVariable[Constant=" << nodeSpeed << ".0]";
   std::stringstream ssPause;
   ssPause << "" << nodePause << "s";
   std::stringstream ssBounds;
   ssBounds << "0|" << scenarioSizeX << "|0|" << scenarioSizeY ;
 
+   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Mode", StringValue ("Time"));
+   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ("2s"));
+   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ("ns3::ConstantRandomVariable[Constant=5.0]"));
+   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ("0|300|0|300"));
+
+  // NS_LOG_UNCOND ("Mobility => ns3::RandomWalk2dMobilityModel");
    mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
                               "Mode", StringValue ("Time"),
-                              "Time", StringValue (ssPause.str ()),
-                              "Speed", StringValue (ssSpeed.str ()),
-                              "Bounds", StringValue (ssBounds.str ()));
+                              "Time", StringValue ("2s"),
+                              "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=5.0]"),
+                              "Bounds", StringValue ("0|300|0|300"));
 
   // ++++++++++++++++++++++++++++++++++++
   // </Mobility>
