@@ -83,21 +83,21 @@ main (int argc, char *argv[])
   // We need location information since we are talking about wifi, so add a
   // constant position to the ghost nodes.
   //
-  MobilityHelper mobility;
+//  MobilityHelper mobility;
 
   // ++++++++++++++++++++++++++++++++++++
   // <Positioning>
   // ++++++++++++++++++++++++++++++++++++
 
-  ObjectFactory pos;
-  pos.SetTypeId ("ns3::RandomRectanglePositionAllocator");
-  std::stringstream xAxisMax;
-  xAxisMax << "ns3::UniformRandomVariable[Min=0.0|Max=" << scenarioSizeX << "]";
-  std::stringstream yAxisMax;
-  yAxisMax << "ns3::UniformRandomVariable[Min=0.0|Max=" << scenarioSizeY << "]";
-  pos.Set ("X", StringValue ( xAxisMax.str () ));
-  pos.Set ("Y", StringValue ( yAxisMax.str () ));
-  Ptr<PositionAllocator> taPositionAlloc = pos.Create ()->GetObject<PositionAllocator> ();
+//  ObjectFactory pos;
+//  pos.SetTypeId ("ns3::RandomRectanglePositionAllocator");
+//  std::stringstream xAxisMax;
+//  xAxisMax << "ns3::UniformRandomVariable[Min=0.0|Max=" << scenarioSizeX << "]";
+//  std::stringstream yAxisMax;
+//  yAxisMax << "ns3::UniformRandomVariable[Min=0.0|Max=" << scenarioSizeY << "]";
+//  pos.Set ("X", StringValue ( xAxisMax.str () ));
+//  pos.Set ("Y", StringValue ( yAxisMax.str () ));
+//  Ptr<PositionAllocator> taPositionAlloc = pos.Create ()->GetObject<PositionAllocator> ();
 
   // ++++++++++++++++++++++++++++++++++++
   // </Positioning>
@@ -108,30 +108,48 @@ main (int argc, char *argv[])
   // <Mobility>
   // ++++++++++++++++++++++++++++++++++++
 
-  std::stringstream ssSpeed;
-  ssSpeed << "ns3::ConstantRandomVariable[Constant=" << nodeSpeed << ".0]";
-  std::stringstream ssPause;
-  ssPause << "" << nodePause << "s";
-  std::stringstream ssBounds;
-  ssBounds << "0|" << scenarioSizeX << "|0|" << scenarioSizeY ;
+//  std::stringstream ssSpeed;
+//  ssSpeed << "ns3::ConstantRandomVariable[Constant=" << nodeSpeed << ".0]";
+//  std::stringstream ssPause;
+//  ssPause << "" << nodePause << "s";
+//  std::stringstream ssBounds;
+//  ssBounds << "0|" << scenarioSizeX << "|0|" << scenarioSizeY ;
+//
+//   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Mode", StringValue ("Time"));
+//   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ("2s"));
+//   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ("ns3::ConstantRandomVariable[Constant=5.0]"));
+//   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ("0|300|0|300"));
+//
+//  // NS_LOG_UNCOND ("Mobility => ns3::RandomWalk2dMobilityModel");
+//   mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
+//                              "Mode", StringValue ("Time"),
+//                              "Time", StringValue ("2s"),
+//                              "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=5.0]"),
+//                              "Bounds", StringValue ("0|300|0|300"));
 
-   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Mode", StringValue ("Time"));
-   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ("2s"));
-   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ("ns3::ConstantRandomVariable[Constant=5.0]"));
-   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ("0|300|0|300"));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Mode", StringValue ("Time"));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ("2s"));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ("ns3::ConstantRandomVariable[Constant=1.0]"));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ("0|200|0|200"));
 
-  // NS_LOG_UNCOND ("Mobility => ns3::RandomWalk2dMobilityModel");
-   mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
-                              "Mode", StringValue ("Time"),
-                              "Time", StringValue ("2s"),
-                              "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=5.0]"),
-                              "Bounds", StringValue ("0|300|0|300"));
+    MobilityHelper mobility;
+    mobility.SetPositionAllocator ("ns3::RandomDiscPositionAllocator",
+                                 "X", StringValue ("100.0"),
+                                 "Y", StringValue ("100.0"),
+                                 "Rho", StringValue ("ns3::UniformRandomVariable[Min=0|Max=50]"));
+    mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
+                             "Mode", StringValue ("Time"),
+                             "Time", StringValue ("2s"),
+                             "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=1.0]"),
+                             "Bounds", StringValue ("0|200|0|200"));
+
+
 
   // ++++++++++++++++++++++++++++++++++++
   // </Mobility>
   // ++++++++++++++++++++++++++++++++++++
 
-  mobility.SetPositionAllocator (taPositionAlloc);
+//  mobility.SetPositionAllocator (taPositionAlloc);
   mobility.Install (nodes);
 
   TapBridgeHelper tapBridge;
