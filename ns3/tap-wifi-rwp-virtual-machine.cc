@@ -99,6 +99,7 @@ main (int argc, char *argv[])
   pos.Set ("Y", StringValue ( yAxisMax.str () ));
   Ptr<PositionAllocator> taPositionAlloc = pos.Create ()->GetObject<PositionAllocator> ();
 
+
   // ++++++++++++++++++++++++++++++++++++
   // </Positioning>
   // ++++++++++++++++++++++++++++++++++++
@@ -109,17 +110,14 @@ main (int argc, char *argv[])
   // ++++++++++++++++++++++++++++++++++++
 
   std::stringstream ssSpeed;
-  ssSpeed << "ns3::ConstantRandomVariable[Constant=" << nodeSpeed << "]";
+  ssSpeed << "ns3::UniformRandomVariable[Min=0.0|Max=" << nodeSpeed << "]";
   std::stringstream ssPause;
-  ssPause << "" << nodePause << "s";
-  std::stringstream ssBounds;
-  ssPause << "0|" << scenarioSizeX << "|0|" << scenarioSizeY ;
+  ssPause << "ns3::ConstantRandomVariable[Constant=" << nodePause << "]";
+  mobility.SetMobilityModel ("ns3::RandomWaypointMobilityModel",
+                                  "Speed", StringValue (ssSpeed.str ()),
+                                  "Pause", StringValue (ssPause.str ()),
+                                  "PositionAllocator", PointerValue (taPositionAlloc));
 
-   mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
-                              "Mode", StringValue ("Time"),
-                              "Time", StringValue (ssPause.str ()),
-                              "Speed", StringValue (ssSpeed.str ()),
-                              "Bounds", StringValue (ssBounds.str ()));
 
   // ++++++++++++++++++++++++++++++++++++
   // </Mobility>
@@ -147,5 +145,6 @@ main (int argc, char *argv[])
   Simulator::Stop (Seconds (TotalTime));
   Simulator::Run ();
   Simulator::Destroy ();
+
 }
 
