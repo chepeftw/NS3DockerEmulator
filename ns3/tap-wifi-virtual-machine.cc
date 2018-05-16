@@ -113,7 +113,7 @@ main (int argc, char *argv[])
   std::stringstream ssPause;
   ssPause << "" << nodePause << "s";
   std::stringstream ssBounds;
-  ssPause << "0|" << scenarioSizeX << "|0|" << scenarioSizeY ;
+  ssBounds << "0|" << scenarioSizeX << "|0|" << scenarioSizeY ;
 
    mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
                               "Mode", StringValue ("Time"),
