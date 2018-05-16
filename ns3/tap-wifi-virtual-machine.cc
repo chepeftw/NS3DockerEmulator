@@ -128,20 +128,20 @@ main (int argc, char *argv[])
 //                              "Bounds", StringValue ("0|300|0|300"));
 
     Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Mode", StringValue ("Time"));
-    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ("2s"));
-    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ("ns3::ConstantRandomVariable[Constant=1.0]"));
-    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ("0|200|0|200"));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ("1s"));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ("ns3::ConstantRandomVariable[Constant=2.0]"));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ("0|316|0|316"));
 
     MobilityHelper mobility;
     mobility.SetPositionAllocator ("ns3::RandomDiscPositionAllocator",
-                                 "X", StringValue ("100.0"),
-                                 "Y", StringValue ("100.0"),
-                                 "Rho", StringValue ("ns3::UniformRandomVariable[Min=0|Max=50]"));
+                                 "X", StringValue ("108.0"),
+                                 "Y", StringValue ("108.0"),
+                                 "Rho", StringValue ("ns3::UniformRandomVariable[Min=0|Max=105]"));
     mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
                              "Mode", StringValue ("Time"),
-                             "Time", StringValue ("2s"),
-                             "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=1.0]"),
-                             "Bounds", StringValue ("0|200|0|200"));
+                             "Time", StringValue ("1s"),
+                             "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=2.0]"),
+                             "Bounds", StringValue ("0|316|0|316"));
 
 
 
