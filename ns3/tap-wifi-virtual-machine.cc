@@ -79,69 +79,44 @@ main (int argc, char *argv[])
   //
   NetDeviceContainer devices = wifi.Install (wifiPhy, wifiMac, nodes);
 
-  //
-  // We need location information since we are talking about wifi, so add a
-  // constant position to the ghost nodes.
-  //
-//  MobilityHelper mobility;
-
-  // ++++++++++++++++++++++++++++++++++++
-  // <Positioning>
-  // ++++++++++++++++++++++++++++++++++++
-
-//  ObjectFactory pos;
-//  pos.SetTypeId ("ns3::RandomRectanglePositionAllocator");
-//  std::stringstream xAxisMax;
-//  xAxisMax << "ns3::UniformRandomVariable[Min=0.0|Max=" << scenarioSizeX << "]";
-//  std::stringstream yAxisMax;
-//  yAxisMax << "ns3::UniformRandomVariable[Min=0.0|Max=" << scenarioSizeY << "]";
-//  pos.Set ("X", StringValue ( xAxisMax.str () ));
-//  pos.Set ("Y", StringValue ( yAxisMax.str () ));
-//  Ptr<PositionAllocator> taPositionAlloc = pos.Create ()->GetObject<PositionAllocator> ();
-
-  // ++++++++++++++++++++++++++++++++++++
-  // </Positioning>
-  // ++++++++++++++++++++++++++++++++++++
-
 
   // ++++++++++++++++++++++++++++++++++++
   // <Mobility>
   // ++++++++++++++++++++++++++++++++++++
 
-//  std::stringstream ssSpeed;
-//  ssSpeed << "ns3::ConstantRandomVariable[Constant=" << nodeSpeed << ".0]";
-//  std::stringstream ssPause;
-//  ssPause << "" << nodePause << "s";
-//  std::stringstream ssBounds;
-//  ssBounds << "0|" << scenarioSizeX << "|0|" << scenarioSizeY ;
-//
-//   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Mode", StringValue ("Time"));
-//   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ("2s"));
-//   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ("ns3::ConstantRandomVariable[Constant=5.0]"));
-//   Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ("0|300|0|300"));
-//
-//  // NS_LOG_UNCOND ("Mobility => ns3::RandomWalk2dMobilityModel");
-//   mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
-//                              "Mode", StringValue ("Time"),
-//                              "Time", StringValue ("2s"),
-//                              "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=5.0]"),
-//                              "Bounds", StringValue ("0|300|0|300"));
+  double radio = scenarioSizeX / 2;
+
+  std::stringstream ssSpeed;
+  ssSpeed << "ns3::ConstantRandomVariable[Constant=" << nodeSpeed << ".0]";
+
+  std::stringstream ssPause;
+  ssPause << "" << nodePause << "s";
+
+  std::stringstream ssBounds;
+  ssBounds << "0|" << scenarioSizeX << "|0|" << scenarioSizeY ;
+
+  std::stringstream ssDiscPos;
+  ssDiscPos << "" << radio ;
+
+  std::stringstream ssRho;
+  ssRho << "ns3::UniformRandomVariable[Min=0|Max=" << radio << "]" ;
+
 
     Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Mode", StringValue ("Time"));
-    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ("1s"));
-    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ("ns3::ConstantRandomVariable[Constant=2.0]"));
-    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ("0|316|0|316"));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Time", StringValue ( ssPause.str () ));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Speed", StringValue ( ssSpeed.str () ));
+    Config::SetDefault ("ns3::RandomWalk2dMobilityModel::Bounds", StringValue ( ssBounds.str () ));
 
     MobilityHelper mobility;
     mobility.SetPositionAllocator ("ns3::RandomDiscPositionAllocator",
-                                 "X", StringValue ("108.0"),
-                                 "Y", StringValue ("108.0"),
-                                 "Rho", StringValue ("ns3::UniformRandomVariable[Min=0|Max=105]"));
+                                 "X", StringValue ( ssDiscPos.str () ),
+                                 "Y", StringValue ( ssDiscPos.str () ),
+                                 "Rho", StringValue ( ssRho.str () ));
     mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
                              "Mode", StringValue ("Time"),
-                             "Time", StringValue ("1s"),
-                             "Speed", StringValue ("ns3::ConstantRandomVariable[Constant=2.0]"),
-                             "Bounds", StringValue ("0|316|0|316"));
+                             "Time", StringValue ( ssPause.str () ),
+                             "Speed", StringValue ( ssSpeed.str () ),
+                             "Bounds", StringValue ( ssBounds.str () ));
 
 
 
