@@ -5,7 +5,7 @@ title: "Introduction to NS3 Docker Emulator"
 
 Network Emulator based on NS3 and Docker, with the help of NS3 docs, Docker docs and some ideas from some research papers.
 
-<img src="/NS3DockerEmulator/images/NS3DockerEmulatorSchema-min.jpg" alt="NS3 Docker Emulator Schema" style="width:100%;padding-top:30px;padding-bottom:30px">
+<img src="http://d2r9k1wfjzxupg.cloudfront.net/NS3DockerEmulatorSchema-min.png" alt="NS3 Docker Emulator Schema" style="width:100%;padding-top:30px;padding-bottom:30px">
 
 Make sure you have everything installed, for detailed instructions refer to the [Preliminaries](/NS3DockerEmulator/doc/preliminaries.html). You can also check the "install.sh" script provided by @ptrsen (Thank you very much 👍).
 

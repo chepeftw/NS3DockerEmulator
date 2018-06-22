@@ -132,6 +132,6 @@ Second issue (*FIXED*), when dealing with a lot of containers, Docker ran into c
 
 So making a big summary.
 
-<img src="/NS3DockerEmulator/images/NS3DockerEmulatorSchema-min.jpg" alt="NS3 Docker Emulator Schema" style="width:100%;padding-top:30px;padding-bottom:30px">
+<img src="http://d2r9k1wfjzxupg.cloudfront.net/NS3DockerEmulatorSchema-min.png" alt="NS3 Docker Emulator Schema" style="width:100%;padding-top:30px;padding-bottom:30px">
 
 The singleSetup.sh takes care of all the tap interfaces and intermediary bridges. The singleEndSetup.sh it makes sure this bridges does not forward their traffic to the arptables and iptables of the host, we would not want this, is better if it goes directly from the container to NS3. Then we have container.sh which builds the internal and external bridge for every container, connects to the corresponding intermediary bridge and assigns MAC and IP address. And finally singleDestroy.sh will destroy everything.
